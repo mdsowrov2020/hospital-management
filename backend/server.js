@@ -1,14 +1,25 @@
-require("dotenv").config();
+import dotenv from "dotenv";
+dotenv.config();
 
-const express = require("express");
-const app = express();
+import express from "express";
+import { connection, sequelize } from "./db/db.js";
+import app from "./app.js";
 
 const port = process.env.PORT || 3001;
 
-app.get("/", (req, res) => {
-  res.send(`Database host: ${process.env.DB_HOST}`);
-});
+const startServer = async () => {
+  try {
+    await connection();
 
-app.listen(port, () => {
-  console.log(`Server running on port ${port}`);
-});
+    await sequelize.sync({ alter: true });
+
+    app.listen(port, () => {
+      console.log(`Server connected on port ${port}`);
+    });
+  } catch (error) {
+    console.error("Failed to start server:", error);
+    process.exit(1);
+  }
+};
+
+startServer();
