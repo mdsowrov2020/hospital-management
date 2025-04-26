@@ -22,7 +22,7 @@ const connection = async () => {
     return sequelize;
   } catch (error) {
     console.error("Unable to connect to the database:", error);
-    throw error; // Re-throw to handle in server.js
+    throw error;
   }
 };
 
