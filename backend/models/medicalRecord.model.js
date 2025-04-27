@@ -11,7 +11,7 @@ const MedicalRecord = sequelize.define("MedicalRecord", {
     type: DataTypes.INTEGER,
     allowNull: false,
     references: {
-      model: "Patient",
+      model: "Patients",
       key: "id",
     },
   },

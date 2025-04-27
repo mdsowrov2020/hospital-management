@@ -11,7 +11,7 @@ const Appointment = sequelize.define("Appointment", {
     type: DataTypes.INTEGER,
     allowNull: false,
     references: {
-      model: "Doctor",
+      model: "Doctors",
       key: "id",
     },
   },
@@ -20,7 +20,7 @@ const Appointment = sequelize.define("Appointment", {
     type: DataTypes.INTEGER,
     allowNull: false,
     references: {
-      model: "Patient",
+      model: "Patients",
       key: "id",
     },
   },

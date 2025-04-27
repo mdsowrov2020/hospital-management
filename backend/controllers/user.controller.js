@@ -55,5 +55,7 @@ export const deleteUser = async (req, res) => {
       return res.status(204).send();
     }
     throw new Error("User not found");
-  } catch (error) {}
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
 };

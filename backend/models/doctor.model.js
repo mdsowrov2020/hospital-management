@@ -13,7 +13,7 @@ const Doctor = sequelize.define("Doctor", {
     type: DataTypes.INTEGER,
     allowNull: false,
     references: {
-      model: "User",
+      model: "Users",
       key: "id",
     },
   },
