@@ -10,7 +10,7 @@ import {
 const router = Router();
 
 router.post("/", createMedicalRecord);
-router.get("/", getMedicalRecords);
+router.get("/patient/:patientId", getMedicalRecords);
 router.get("/:id", getMedicalRecord);
 router.put("/:id", updateMedicalRecord);
 router.delete("/:id", deleteMedicalRecord);
