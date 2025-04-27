@@ -1,4 +1,4 @@
-import { Appointment } from "../models/index.js";
+import { Appointment, Doctor, Patient, User } from "../models/index.js";
 
 export const createAppointment = async (req, res) => {
   try {
@@ -11,7 +11,28 @@ export const createAppointment = async (req, res) => {
 
 export const getAppointments = async (req, res) => {
   try {
-    const appointments = await Appointment.findAll();
+    const appointments = await Appointment.findAll({
+      include: [
+        {
+          model: Doctor,
+          include: [
+            {
+              model: User,
+              attributes: ["firstName", "lastName"],
+            },
+          ],
+        },
+        {
+          model: Patient,
+          include: [
+            {
+              model: User,
+              attributes: ["firstName", "lastName"],
+            },
+          ],
+        },
+      ],
+    });
     res.status(200).json(appointments);
   } catch (error) {
     res.status(400).json({ message: error.message });
@@ -53,5 +74,7 @@ export const deleteAppointment = async (req, res) => {
       return res.status(204).send();
     }
     throw new Error("Appointment not found");
-  } catch (error) {}
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
 };

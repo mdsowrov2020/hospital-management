@@ -1,5 +1,5 @@
 import { DataTypes } from "sequelize";
-import { sequelize } from "../../db.js";
+import { sequelize } from "../db/db.js";
 
 const Patient = sequelize.define("Patient", {
   id: {
@@ -11,7 +11,7 @@ const Patient = sequelize.define("Patient", {
     type: DataTypes.INTEGER,
     allowNull: false,
     references: {
-      model: "User",
+      model: "Users",
       key: "id",
     },
   },

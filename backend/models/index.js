@@ -1,4 +1,3 @@
-import { sequelize } from "../db/db.js";
 import Appointment from "./appointment.model.js";
 import Doctor from "./doctor.model.js";
 import MedicalRecord from "./medicalRecord.model.js";
@@ -19,5 +18,18 @@ Appointment.belongsTo(Patient, { foreignKey: "patientId" });
 
 Patient.hasMany(MedicalRecord, { foreignKey: "patientId" });
 MedicalRecord.belongsTo(Patient, { foreignKey: "patientId" });
+
+async function syncModels() {
+  try {
+    await User.sync({ alter: true });
+    await Doctor.sync({ alter: true });
+    await Patient.sync({ alter: true });
+    await Appointment.sync({ alter: true });
+    await MedicalRecord.sync({ alter: true });
+    console.log("All models were synchronized successfully.");
+  } catch (error) {
+    console.error("Error synchronizing models:", error);
+  }
+}
 
 export { User, Doctor, Patient, Appointment, MedicalRecord };

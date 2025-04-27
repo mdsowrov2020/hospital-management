@@ -1,4 +1,4 @@
-import { MedicalRecord } from "../models/index.js";
+import { MedicalRecord, Patient, User } from "../models/index.js";
 
 export const createMedicalRecord = async (req, res) => {
   try {
@@ -53,6 +53,19 @@ export const updateMedicalRecord = async (req, res) => {
       const updatedMedicalRecord = await MedicalRecord.findByPk(id);
       res.status(200).json(updatedMedicalRecord);
     }
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+};
+
+export const deleteMedicalRecord = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const deleted = await MedicalRecord.destroy({ where: { id: id } });
+    if (deleted) {
+      return res.status(204).send();
+    }
+    throw new Error("Medical record not found");
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
