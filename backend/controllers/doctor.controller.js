@@ -28,7 +28,14 @@ export const getDoctors = async (req, res) => {
 export const getDoctor = async (req, res) => {
   try {
     const { id } = req.params;
-    const doctor = await Doctor.findByPk(id);
+    const doctor = await Doctor.findByPk(id, {
+      include: [
+        {
+          model: User,
+          attributes: ["firstName", "lastName", "email"],
+        },
+      ],
+    });
     if (!doctor) res.status(404).json({ message: "Doctor not found" });
     res.status(200).json(doctor);
   } catch (error) {
