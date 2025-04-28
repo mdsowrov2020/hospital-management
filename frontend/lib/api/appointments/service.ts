@@ -48,7 +48,7 @@ export const updateAppointment = async (
   appointmentData: UpdateAppointmentDto
 ): Promise<Appointment> => {
   return apirequest<Appointment>(endpoints.appointments.detail(id.toString()), {
-    method: "PATCH",
+    method: "PUT",
     body: appointmentData,
   });
 };
