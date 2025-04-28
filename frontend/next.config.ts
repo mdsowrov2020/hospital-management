@@ -13,6 +13,15 @@ const nextConfig = {
     "rc-tree",
     "rc-table",
     "@rc-component/util",
+
+    "rc-select",
+    "rc-cascader",
+
+    "rc-field-form",
+    "rc-trigger",
+    "rc-dialog",
+    "rc-input",
+    "rc-checkbox",
   ],
   experimental: {
     missingSuspenseWithCSRBailout: false,
