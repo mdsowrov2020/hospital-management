@@ -1,23 +1,3 @@
-// import AppointmentCard from "@/components/appointments/AppointmentCard";
-// import { Col, Row } from "antd";
-// import React from "react";
-
-// const Appointments = () => {
-//   return (
-//     <div>
-//       Appointments
-//       <Row gutter={[16, 16]}>
-//         <Col span={6}>
-//           <AppointmentCard />
-//         </Col>
-//       </Row>
-//     </div>
-//   );
-// };
-
-// export default Appointments;
-
-// pages/appointments/index.tsx
 import { Card, List, Typography, Tag, Space } from "antd";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
