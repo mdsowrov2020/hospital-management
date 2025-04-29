@@ -1,4 +1,4 @@
-import User from "../../models/user.model";
+import User from "../../models/user.model.js";
 const getUserById = async (id) => {
   const user = await User.findByPk(id, {
     attributes: { exclude: ["password"] },

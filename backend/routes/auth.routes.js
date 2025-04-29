@@ -1,6 +1,22 @@
-import { Express } from "express";
+import { Router } from "express";
 
-import { jwt } from "jsonwebtoken";
-import { bcrypt } from "bcryptjs";
+import { validateLogin, validateRegister } from "../utils/validators.js";
+import {
+  login,
+  register,
+  registerAdminController,
+} from "../controllers/auth/auth.controller.js";
+import { authenticate, authorize } from "../middleware/auth.js";
 
-const router = express.Router();
+const router = Router();
+
+router.post("/register", validateRegister, register);
+router.post("/login", validateLogin, login);
+router.post(
+  "/admin/register",
+  authenticate,
+  authorize(["admin"]),
+  registerAdminController
+);
+
+export default router;
