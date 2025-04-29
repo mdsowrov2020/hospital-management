@@ -14,9 +14,26 @@ app.use("/api", routes);
 
 // Error handling middleware
 
+// app.use(errorHandler);
 app.use((err, req, res, next) => {
   console.error(err.stack);
-  res.status(500).json({ error: "Something went wrong!" });
+
+  // Handle Sequelize validation errors
+  if (err.name === "SequelizeValidationError") {
+    return res.status(400).json({
+      success: false,
+      error: err.errors.map((e) => e.message),
+    });
+  }
+
+  // Handle other errors
+  const statusCode = err.statusCode || 500;
+  const message = err.message || "Something went wrong!";
+
+  res.status(statusCode).json({
+    success: false,
+    error: message,
+  });
 });
 
 export default app;
