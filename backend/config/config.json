@@ -1,0 +1,30 @@
+{
+  "development": {
+    "username": "postgres",
+    "password": "password",
+    "database": "hospital",
+    "host": "127.0.0.1",
+    "port": "5432",
+    "dialect": "postgres"
+  },
+  "test": {
+    "username": "process.env.TEST_DB_USER",
+    "password": "process.env.TEST_DB_PASS",
+    "database": "process.env.TEST_DB_NAME",
+    "host": "process.env.DB_HOST",
+    "dialect": "postgres"
+  },
+  "production": {
+    "username": "process.env.PROD_DB_USER",
+    "password": "process.env.PROD_DB_PASS",
+    "database": "process.env.PROD_DB_NAME",
+    "host": "process.env.PROD_DB_HOST",
+    "dialect": "postgres",
+    "dialectOptions": {
+      "ssl": {
+        "require": true,
+        "rejectUnauthorized": false
+      }
+    }
+  }
+}

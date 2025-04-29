@@ -1,4 +1,8 @@
 import { User } from "../models/index.js";
+import {
+  getUserById,
+  updateUserProfile,
+} from "../services/user/userService.js";
 
 export const createUser = async (req, response) => {
   try {
@@ -57,5 +61,23 @@ export const deleteUser = async (req, res) => {
     throw new Error("User not found");
   } catch (error) {
     res.status(400).json({ error: error.message });
+  }
+};
+
+export const getProfile = async (req, res, next) => {
+  try {
+    const user = await getUserById(req.user.id);
+    res.status(200).json({ success: true, user });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const updateProfile = async (req, res, next) => {
+  try {
+    const updatedUser = await updateUserProfile(req.user.id, req.body);
+    res.status(200).json({ success: true, user: updatedUser });
+  } catch (error) {
+    next(error);
   }
 };
