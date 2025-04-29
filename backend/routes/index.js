@@ -4,6 +4,7 @@ import appointmentRoutes from "./appointment.routes.js";
 import medicalRoutes from "./medical.routes.js";
 import doctorRoutes from "./doctor.routes.js";
 import patientRoutes from "./patient.routes.js";
+import authRoutes from "./auth.routes.js";
 const router = Router();
 
 router.use("/users", userRoutes);
