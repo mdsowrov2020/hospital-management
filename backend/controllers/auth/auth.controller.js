@@ -31,3 +31,18 @@ export const registerAdminController = async (req, res, next) => {
     next(error);
   }
 };
+
+export const getCurrentUser = async (req, res, next) => {
+  try {
+    // The user is attached to the request by the authenticate middleware
+    const user = req.user;
+
+    // Remove sensitive information
+    const userWithoutPassword = user.toJSON ? user.toJSON() : user;
+    delete userWithoutPassword.password;
+
+    res.status(200).json({ success: true, user: userWithoutPassword });
+  } catch (error) {
+    next(error);
+  }
+};
