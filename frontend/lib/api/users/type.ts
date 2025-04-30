@@ -1,16 +1,28 @@
 export interface User {
-  id: string;
-  name: string;
+  id: number;
+  firstName: string;
+  lastName: string;
   email: string;
-  role: string;
+  role: "admin" | "doctor" | "patient";
   createdAt: string;
   updatedAt: string;
 }
 
-export interface CreateUserDto {
-  name: string;
+export interface RegisterUserData {
+  firstName: string;
+  lastName: string;
   email: string;
-  role: string;
+  password: string;
+  isDoctor?: boolean;
 }
 
-export interface UpdateUserDto extends Partial<CreateUserDto> {}
+export interface LoginUserData {
+  email: string;
+  password: string;
+}
+
+export interface AuthResponse {
+  success: boolean;
+  user: User;
+  token: string;
+}
