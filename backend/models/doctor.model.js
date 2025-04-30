@@ -30,6 +30,10 @@ const Doctor = sequelize.define("Doctor", {
     type: DataTypes.STRING,
     allowNull: false,
   },
+  consultationFee: {
+    type: DataTypes.INTEGER,
+    allowNull: true,
+  },
   availableDays: {
     type: DataTypes.ARRAY(DataTypes.STRING),
     allowNull: false,

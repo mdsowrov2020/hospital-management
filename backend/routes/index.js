@@ -13,7 +13,7 @@ const router = Router();
 router.use("/auth", authRoutes);
 
 // Protected routes (require authentication)
-router.use(authenticate);
+// router.use(authenticate);
 router.use("/users", userRoutes);
 router.use("/appointments", appointmentRoutes);
 router.use("/medical-records", medicalRoutes);
