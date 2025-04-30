@@ -16,7 +16,9 @@ const endpoints = {
   patients: {
     base: "/patients",
     list: "/patients",
+    create: "/patients",
     detail: (id: string) => `/patients/${id}`,
+    update: (id: string) => `/patients/${id}`,
   },
   doctors: {
     base: "/doctors",
