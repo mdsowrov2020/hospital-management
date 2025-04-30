@@ -8,7 +8,7 @@ export interface Patient {
   bloodType?: string;
   address?: string;
   phoneNumber: string;
-  user?: User;
+  User: User;
 }
 
 export interface CreatePatientData {
