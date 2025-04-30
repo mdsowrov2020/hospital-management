@@ -1,4 +1,13 @@
 const endpoints = {
+  auth: {
+    base: "/auth",
+    login: "/auth/login",
+    register: "/auth/register",
+    me: "/auth/me",
+    admin: {
+      register: "/auth/admin/register",
+    },
+  },
   users: {
     base: "/users",
     list: "/users",
