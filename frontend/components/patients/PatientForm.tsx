@@ -2,14 +2,15 @@ import { Col, DatePicker, Form, Input, Row, Select } from "antd";
 import TextArea from "antd/es/input/TextArea";
 import React from "react";
 
-const PatientForm = () => {
+const PatientForm = ({ form }) => {
+  console.log(form);
   return (
     <>
-      <Form layout="vertical">
+      <Form layout="vertical" form={form}>
         <Row gutter={16}>
           <Col span={12}>
             <Form.Item hasFeedback label="First name" name="firstName">
-              <Input placeholder="Validate required onBlur" />
+              <Input placeholder="First name" />
             </Form.Item>
           </Col>
           <Col span={12}>

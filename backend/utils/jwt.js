@@ -9,7 +9,18 @@ const generateToken = (userId, role) => {
 };
 
 const verifyToken = (token) => {
-  return jwt.verify(token, process.env.JWT_SECRET);
-};
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
+    // Ensure the decoded object has the expected structure
+    if (!decoded.id) {
+      throw new Error("Invalid token payload");
+    }
+
+    return decoded;
+  } catch (error) {
+    console.error("JWT verification error:", error);
+    throw new Error("Invalid token");
+  }
+};
 export { generateToken, verifyToken };

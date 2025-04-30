@@ -2,10 +2,12 @@ import CustomeTable from "@/components/ui/CustomeTable";
 import { getPatients } from "@/lib/api/patients/service";
 import { Patient } from "@/lib/api/patients/types";
 import { getAge } from "@/utils/dateHelpers";
-import { Button, Modal, Space, TableColumnsType, Tag } from "antd";
+import { Button, Form, Modal, Space, TableColumnsType, Tag } from "antd";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
+
 import React, { useState } from "react";
 import PatientForm from "@/components/patients/PatientForm";
+import dayjs from "dayjs";
 
 export async function getStaticProps() {
   try {
@@ -46,7 +48,8 @@ interface DataType {
 const Patients: React.FC<PatientsProps> = ({ patients }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalTitle, setModalTitle] = useState("");
-  console.log("Response : ", patients);
+  const [formData, setFormdata] = useState<Patient>();
+  const [form] = Form.useForm();
   const dataSource = patients.map((patient) => {
     return {
       key: patient.id,
@@ -62,8 +65,28 @@ const Patients: React.FC<PatientsProps> = ({ patients }) => {
   const handleEdit = (data: Patient) => {
     console.log("Edit clicked: ", data);
     const userName = `${data.User.firstName} ${data.User.lastName}`;
+    form.setFieldsValue({
+      firstName: data.User.firstName,
+      lastName: data.User.lastName,
+      gender: data.gender,
+      phoneNumber: data.phoneNumber,
+      dateOfBirth: dayjs(data.dateOfBirth),
+      email: data.User.email,
+      bloodType: data.bloodType,
+      address: data.address,
+    });
+    setFormdata(data);
     setModalTitle(userName);
     setIsModalOpen(true);
+  };
+
+  const handleExternalSubmit = async () => {
+    try {
+      const values = await form.validateFields();
+      console.log("Form values from outside:", values);
+    } catch (errorInfo) {
+      console.log("Validation failed:", errorInfo);
+    }
   };
 
   const handleModalCancel = () => {
@@ -153,6 +176,7 @@ const Patients: React.FC<PatientsProps> = ({ patients }) => {
         open={isModalOpen}
         okText="Update"
         onCancel={handleModalCancel}
+        onOk={handleExternalSubmit}
         width={{
           xs: "90%",
           sm: "80%",
@@ -162,7 +186,7 @@ const Patients: React.FC<PatientsProps> = ({ patients }) => {
           xxl: "40%",
         }}
       >
-        <PatientForm />
+        <PatientForm form={form} />
       </Modal>
       <CustomeTable dataSource={dataSource} columns={columns} />
     </>
