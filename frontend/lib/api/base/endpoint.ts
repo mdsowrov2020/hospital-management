@@ -35,6 +35,10 @@ const endpoints = {
     list: "/medical-records",
     detail: (id: string) => `/medical-records/${id}`,
   },
+  profile: {
+    get: "/profile",
+    update: "/profile",
+  },
 };
 
 export default endpoints;

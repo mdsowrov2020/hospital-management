@@ -16,6 +16,8 @@ import Link from "next/link";
 import Head from "next/head";
 import { useAuth } from "@/context/AuthProvider";
 import { loginUser } from "@/lib/api/auth/service";
+import toast from "react-hot-toast";
+import { getProfile } from "@/lib/api/profile/service";
 
 const { Title, Text } = Typography;
 
@@ -28,20 +30,26 @@ export default function LoginPage() {
   const onFinish = async (values) => {
     setLoading(true);
     try {
-      // Simulate API call
       const response = await loginUser({
         email: values.email,
         password: values.password,
       });
       login(response.token, response.user);
-      console.log(response.user);
-      // message.success("Login successful!");
-
+      const profile = await getProfile();
+      toast.success("Successfully logged in..");
       if (response.user.role === "doctor") {
-        router.push("/profile/doctor/create");
+        if (profile.fullName !== null || profile.licenseNumber !== null) {
+          router.push("/profile/doctor");
+        } else {
+          router.push("/profile/patient/create");
+        }
       }
       if (response.user.role === "patient") {
-        router.push("/profile/patient/create");
+        if (profile.fullName !== null) {
+          router.push("/profile/patient");
+        } else {
+          router.push("/profile/patient/create");
+        }
       }
     } catch (error) {
       console.error("Login error:", error);

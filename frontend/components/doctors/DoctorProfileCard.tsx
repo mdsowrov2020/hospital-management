@@ -1,52 +1,69 @@
-"use client";
-import { Card, Avatar, Tag, Space } from "antd";
-import {
-  ClockCircleOutlined,
-  MailOutlined,
-  UserOutlined,
-} from "@ant-design/icons";
-import { Doctor } from "@/lib/api/doctors/types";
+import { Card, Avatar, Typography, Row, Col } from "antd";
+import { PhoneOutlined } from "@ant-design/icons";
 
-const { Meta } = Card;
+const { Title, Text } = Typography;
 
-export default function DoctorProfileCard({ doctor }) {
-  console.log(doctor);
+const DoctorProfileCard = ({ profile }) => {
+  console.log(profile);
+
+  const {
+    fullName,
+    specialization,
+    availableDays,
+    availableHours,
+    licenseNumber,
+  } = profile;
   return (
     <Card
-      hoverable
+      style={{ maxWidth: 350, margin: "auto", borderRadius: 12 }}
+      bodyStyle={{ padding: 0 }}
       cover={
-        <img
-          alt="Heart Center"
-          src="https://images.unsplash.com/photo-1579684385127-1ef15d508118?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80"
-          style={{
-            height: "180px",
-            width: "100%",
-            objectFit: "cover",
-            borderTopLeftRadius: 16,
-            borderTopRightRadius: 16,
-          }}
-        />
+        <div
+          style={{ background: "#000", padding: "70px 0", textAlign: "center" }}
+        >
+          <Title style={{ color: "#fff", marginBottom: 0 }} level={4}>
+            {fullName}
+          </Title>
+          <Text style={{ color: "#ccc" }}>{specialization}</Text>
+        </div>
       }
     >
-      <Meta
-        avatar={<Avatar size="large" icon={<UserOutlined />} />}
-        title={`${doctor.User.firstName} ${doctor.User.lastName}`}
-        description={doctor.specialization}
-      />
-      <div style={{ marginTop: 16 }}>
-        <Space direction="vertical" size={8}>
-          <Tag color="blue">License: {doctor.licenseNumber}</Tag>
-          <div>
-            <ClockCircleOutlined /> Available: {doctor.availableHours}
-          </div>
-          <div>
-            <strong>Days:</strong> {doctor.availableDays.join(" ")}
-          </div>
-          <div>
-            <MailOutlined /> {doctor.User.email}
-          </div>
-        </Space>
+      <div style={{ textAlign: "center", marginTop: -40 }}>
+        <Avatar
+          size={80}
+          src="/path-to-your-profile-image.png"
+          style={{ border: "3px solid white" }}
+        />
+        <div style={{ marginTop: 12 }}>
+          <Text>
+            456, Estern evenue, Courtage area,
+            <br />
+            New York
+          </Text>
+        </div>
+        <div style={{ marginTop: 10 }}>
+          <PhoneOutlined /> <Text>264-625-2583</Text>
+        </div>
+        <Row gutter={16} justify="center" style={{ marginTop: 20 }}>
+          <Col span={8}>
+            <Text strong>564</Text>
+            <br />
+            <Text type="secondary">Following</Text>
+          </Col>
+          <Col span={8}>
+            <Text strong>18k</Text>
+            <br />
+            <Text type="secondary">Followers</Text>
+          </Col>
+          <Col span={8}>
+            <Text strong>565</Text>
+            <br />
+            <Text type="secondary">Post</Text>
+          </Col>
+        </Row>
       </div>
     </Card>
   );
-}
+};
+
+export default DoctorProfileCard;

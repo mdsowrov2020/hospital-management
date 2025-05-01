@@ -5,6 +5,7 @@ import "@/styles/globals.css";
 import { ConfigProvider } from "antd";
 import type { AppProps } from "next/app";
 import { useRouter } from "next/router";
+import { Toaster } from "react-hot-toast";
 
 export default function App({ Component, pageProps }: AppProps) {
   const router = useRouter();
@@ -32,6 +33,22 @@ export default function App({ Component, pageProps }: AppProps) {
             <ProtectedRoute>
               <Component {...pageProps} />
             </ProtectedRoute>
+            <Toaster
+              containerStyle={{
+                top: 20,
+                left: 20,
+                bottom: 20,
+                right: 20,
+              }}
+              toastOptions={{
+                className: "",
+                style: {
+                  border: "1px solid #713200",
+                  padding: "16px",
+                  color: "#713200",
+                },
+              }}
+            />
           </AppLayout>
         )}
       </AuthProvider>

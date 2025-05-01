@@ -100,7 +100,6 @@ export const updateProfile = async (req, res) => {
 export const getProfile = async (req, res) => {
   try {
     // Debug log to check the user object
-    console.log("Request user:", req.user);
 
     if (!req.user?.id) {
       return res.status(401).json({
@@ -127,14 +126,9 @@ export const getProfile = async (req, res) => {
       });
     }
 
-    res.status(200).json({
-      success: true,
-      data: {
-        email: req.user.email,
-        role: req.user.role,
-        profile: profile || {}, // Return empty object if no profile
-      },
-    });
+    res.status(200).json(
+      { ...profile, email: req.user.email, role: req.user.role } || {} // Return empty object if no profile
+    );
   } catch (error) {
     console.error("Profile error:", error);
     res.status(500).json({
