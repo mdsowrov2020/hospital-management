@@ -1,4 +1,13 @@
 const endpoints = {
+  auth: {
+    base: "/auth",
+    login: "/auth/login",
+    register: "/auth/register",
+    me: "/auth/me",
+    admin: {
+      register: "/auth/admin/register",
+    },
+  },
   users: {
     base: "/users",
     list: "/users",
@@ -7,7 +16,9 @@ const endpoints = {
   patients: {
     base: "/patients",
     list: "/patients",
+    create: "/patients",
     detail: (id: string) => `/patients/${id}`,
+    update: (id: string) => `/patients/${id}`,
   },
   doctors: {
     base: "/doctors",

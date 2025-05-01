@@ -4,6 +4,7 @@ import {
   Form,
   Input,
   Button,
+  Checkbox,
   Card,
   Typography,
   Divider,
@@ -11,44 +12,33 @@ import {
   Row,
   Col,
 } from "antd";
-import { MailOutlined, LockOutlined } from "@ant-design/icons";
+import {
+  MailOutlined,
+  LockOutlined,
+  UserOutlined,
+  MedicineBoxOutlined,
+} from "@ant-design/icons";
 import Link from "next/link";
 import Head from "next/head";
-import { useAuth } from "@/context/AuthProvider";
-import { loginUser } from "@/lib/api/auth/service";
 
 const { Title, Text } = Typography;
 
-export default function LoginPage() {
+export default function RegisterPage() {
   const [form] = Form.useForm();
   const router = useRouter();
   const [loading, setLoading] = useState(false);
-  const { login } = useAuth();
 
   const onFinish = async (values) => {
     setLoading(true);
     try {
       // Simulate API call
-      const response = await loginUser({
-        email: values.email,
-        password: values.password,
-      });
-      login(response.token, response.user);
-      console.log(response.user);
-      // message.success("Login successful!");
-
-      if (response.user.role === "doctor") {
-        router.push("/profile/doctor/create");
-      }
-      if (response.user.role === "patient") {
-        router.push("/profile/patient/create");
-      }
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+      console.log(values);
+      // message.success("Registration successful!");
+      // form.resetFields();
+      // router.push("/login");
     } catch (error) {
-      console.error("Login error:", error);
-      message.error(
-        error.response?.data?.message ||
-          "Login failed. Please check your credentials."
-      );
+      message.error("Registration failed. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -57,7 +47,7 @@ export default function LoginPage() {
   return (
     <>
       <Head>
-        <title>Login | HMS</title>
+        <title>Register | HMS</title>
       </Head>
 
       <Row
@@ -80,15 +70,18 @@ export default function LoginPage() {
           >
             <div style={{ textAlign: "center", marginBottom: 24 }}>
               <Title level={3} style={{ color: "#1890ff", marginBottom: 8 }}>
-                Welcome Back
+                Create Your Account
               </Title>
-              <Text type="secondary">Sign in to access your account</Text>
+              <Text type="secondary">
+                Join our platform to access premium features
+              </Text>
             </div>
 
             <Form
               form={form}
-              name="login"
+              name="register"
               onFinish={onFinish}
+              scrollToFirstError
               layout="vertical"
             >
               <Form.Item
@@ -120,7 +113,12 @@ export default function LoginPage() {
                     required: true,
                     message: "Please input your password!",
                   },
+                  {
+                    min: 6,
+                    message: "Password must be at least 6 characters!",
+                  },
                 ]}
+                hasFeedback
               >
                 <Input.Password
                   prefix={<LockOutlined style={{ color: "rgba(0,0,0,.25)" }} />}
@@ -129,11 +127,51 @@ export default function LoginPage() {
                 />
               </Form.Item>
 
-              <div style={{ marginBottom: 24, textAlign: "right" }}>
-                <Link href="/forgot-password" legacyBehavior>
-                  <a style={{ fontSize: 14 }}>Forgot password?</a>
-                </Link>
-              </div>
+              <Form.Item
+                name="confirm"
+                label="Confirm Password"
+                dependencies={["password"]}
+                hasFeedback
+                rules={[
+                  {
+                    required: true,
+                    message: "Please confirm your password!",
+                  },
+                  ({ getFieldValue }) => ({
+                    validator(_, value) {
+                      if (!value || getFieldValue("password") === value) {
+                        return Promise.resolve();
+                      }
+                      return Promise.reject(
+                        new Error("The two passwords do not match!")
+                      );
+                    },
+                  }),
+                ]}
+              >
+                <Input.Password
+                  prefix={<LockOutlined style={{ color: "rgba(0,0,0,.25)" }} />}
+                  placeholder="Confirm Password"
+                  size="large"
+                />
+              </Form.Item>
+
+              <Form.Item
+                name="isDoctor"
+                valuePropName="checked"
+                style={{ marginBottom: 24 }}
+              >
+                <Checkbox>
+                  <span
+                    style={{ display: "inline-flex", alignItems: "center" }}
+                  >
+                    <MedicineBoxOutlined
+                      style={{ marginRight: 8, color: "#1890ff" }}
+                    />
+                    I am a medical professional
+                  </span>
+                </Checkbox>
+              </Form.Item>
 
               <Form.Item>
                 <Button
@@ -144,17 +182,16 @@ export default function LoginPage() {
                   loading={loading}
                   style={{ height: 48, fontSize: 16 }}
                 >
-                  Login
+                  Register
                 </Button>
               </Form.Item>
 
-              <Divider>New to HealthConnect?</Divider>
+              <Divider>Or</Divider>
 
               <div style={{ textAlign: "center" }}>
-                <Link href="/auth/signup" legacyBehavior>
-                  <Button type="default" size="large">
-                    Create an account
-                  </Button>
+                <Text type="secondary">Already have an account? </Text>
+                <Link href="/auth/login" legacyBehavior>
+                  <a style={{ fontWeight: 500 }}>Login now</a>
                 </Link>
               </div>
             </Form>

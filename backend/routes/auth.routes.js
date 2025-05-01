@@ -2,6 +2,7 @@ import { Router } from "express";
 
 import { validateLogin, validateRegister } from "../utils/validators.js";
 import {
+  getCurrentUser,
   login,
   register,
   registerAdminController,
@@ -18,5 +19,7 @@ router.post(
   authorize(["admin"]),
   registerAdminController
 );
+
+router.get("/me", authenticate, getCurrentUser);
 
 export default router;

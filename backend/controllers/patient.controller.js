@@ -15,7 +15,7 @@ export const getAllPatients = async (req, res) => {
       include: [
         {
           model: User,
-          attributes: ["firstName", "lastName", "email"],
+          attributes: ["email"],
         },
       ],
     });

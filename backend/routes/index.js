@@ -5,6 +5,7 @@ import medicalRoutes from "./medical.routes.js";
 import doctorRoutes from "./doctor.routes.js";
 import patientRoutes from "./patient.routes.js";
 import authRoutes from "./auth.routes.js";
+import profileRoutes from "./profile.routes.js";
 import { authenticate } from "../middleware/auth.js";
 
 const router = Router();
@@ -19,5 +20,6 @@ router.use("/appointments", appointmentRoutes);
 router.use("/medical-records", medicalRoutes);
 router.use("/doctors", doctorRoutes);
 router.use("/patients", patientRoutes);
+router.use("/profile", profileRoutes);
 
 export default router;
