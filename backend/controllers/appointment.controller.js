@@ -20,11 +20,11 @@ export const getAppointments = async (req, res) => {
       include: [
         {
           model: Doctor,
-          include: [{ model: User, attributes: ["firstName", "lastName"] }],
+          include: [{ model: User, attributes: ["email"] }],
         },
         {
           model: Patient,
-          include: [{ model: User, attributes: ["firstName", "lastName"] }],
+          include: [{ model: User, attributes: ["email"] }],
         },
       ],
       order: [

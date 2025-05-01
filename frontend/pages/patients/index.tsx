@@ -11,7 +11,7 @@ import dayjs from "dayjs";
 
 export async function getStaticProps() {
   try {
-    const patients = await getPatients();
+    const patients: Patient[] = await getPatients();
 
     return {
       props: {
@@ -48,26 +48,28 @@ interface DataType {
 const Patients: React.FC<PatientsProps> = ({ patients }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalTitle, setModalTitle] = useState("");
-  const [formData, setFormdata] = useState<Patient>();
+
   const [form] = Form.useForm();
   const dataSource = patients.map((patient) => {
-    return {
-      key: patient.id,
-      name: `${patient.User?.firstName} ${patient.User?.lastName}`,
-      age: getAge(patient.dateOfBirth) + "y",
-      address: patient.address,
-      gender: patient.gender.charAt(0).toUpperCase() + patient.gender.slice(1),
-      bloodGroup: patient.bloodType,
-      phoneNumber: patient.phoneNumber,
-    };
+    if (patient) {
+      return {
+        key: patient.id,
+        name: patient.fullName,
+        age: getAge(patient.dateOfBirth) + "y",
+        address: patient.address,
+        gender:
+          patient.gender?.charAt(0).toUpperCase() + patient.gender?.slice(1),
+        bloodGroup: patient.bloodType,
+        phoneNumber: patient.phoneNumber,
+      };
+    }
   });
 
   const handleEdit = (data: Patient) => {
     console.log("Edit clicked: ", data);
-    const userName = `${data.User.firstName} ${data.User.lastName}`;
+    const userName = data.fullName;
     form.setFieldsValue({
-      firstName: data.User.firstName,
-      lastName: data.User.lastName,
+      fullName: data.fullName,
       gender: data.gender,
       phoneNumber: data.phoneNumber,
       dateOfBirth: dayjs(data.dateOfBirth),
@@ -75,7 +77,7 @@ const Patients: React.FC<PatientsProps> = ({ patients }) => {
       bloodType: data.bloodType,
       address: data.address,
     });
-    setFormdata(data);
+
     setModalTitle(userName);
     setIsModalOpen(true);
   };
@@ -118,7 +120,9 @@ const Patients: React.FC<PatientsProps> = ({ patients }) => {
     {
       title: "Gender",
       dataIndex: "gender",
-      render: (gender: string) => {
+      render: (gender: string | null) => {
+        if (!gender) return "-"; // or return null, or any placeholder you prefer
+
         const capitalized = gender.charAt(0).toUpperCase() + gender.slice(1);
         let color: string;
 

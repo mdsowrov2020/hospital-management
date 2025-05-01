@@ -1,7 +1,6 @@
 export interface User {
   id: number;
-  firstName: string;
-  lastName: string;
+
   email: string;
   role: "admin" | "doctor" | "patient";
   createdAt: string;
@@ -9,8 +8,6 @@ export interface User {
 }
 
 export interface RegisterUserData {
-  firstName: string;
-  lastName: string;
   email: string;
   password: string;
   isDoctor?: boolean;
