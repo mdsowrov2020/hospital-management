@@ -1,52 +1,111 @@
-"use client";
-import { Card, Avatar, Tag, Space } from "antd";
+import React from "react";
+import { Card, Row, Col, Typography, Tag, Avatar, Divider } from "antd";
 import {
-  ClockCircleOutlined,
   MailOutlined,
+  CalendarOutlined,
+  IdcardOutlined,
+  ClockCircleOutlined,
+  DollarOutlined,
+  ManOutlined,
+  TeamOutlined,
   UserOutlined,
 } from "@ant-design/icons";
-import { Doctor } from "@/lib/api/doctors/types";
+import dayjs from "dayjs";
 
-const { Meta } = Card;
+const { Title, Text } = Typography;
 
-export default function DoctorProfileCard({ doctor }) {
-  console.log(doctor);
+interface DoctorProfileProps {
+  profile: {
+    fullName: string;
+    specialization: string;
+    licenseNumber: string;
+    dateOfBirth: string;
+    department: string;
+    consultationFee: number;
+    gender: string;
+    availableDays: string[];
+    availableHours: string;
+    createdAt: string;
+    updatedAt: string;
+    email: string;
+  };
+}
+
+const DoctorProfileCard: React.FC<{
+  profile: DoctorProfileProps["profile"];
+}> = ({ profile }) => {
   return (
-    <Card
-      hoverable
-      cover={
-        <img
-          alt="Heart Center"
-          src="https://images.unsplash.com/photo-1579684385127-1ef15d508118?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80"
-          style={{
-            height: "180px",
-            width: "100%",
-            objectFit: "cover",
-            borderTopLeftRadius: 16,
-            borderTopRightRadius: 16,
-          }}
-        />
-      }
-    >
-      <Meta
-        avatar={<Avatar size="large" icon={<UserOutlined />} />}
-        title={`${doctor.User.firstName} ${doctor.User.lastName}`}
-        description={doctor.specialization}
-      />
-      <div style={{ marginTop: 16 }}>
-        <Space direction="vertical" size={8}>
-          <Tag color="blue">License: {doctor.licenseNumber}</Tag>
-          <div>
-            <ClockCircleOutlined /> Available: {doctor.availableHours}
-          </div>
-          <div>
-            <strong>Days:</strong> {doctor.availableDays.join(" ")}
-          </div>
-          <div>
-            <MailOutlined /> {doctor.User.email}
-          </div>
-        </Space>
-      </div>
+    <Card style={{ maxWidth: 900, margin: "40px auto", borderRadius: 12 }}>
+      {/* Header */}
+      <Row align="middle" gutter={24}>
+        <Col>
+          <Avatar
+            size={96}
+            icon={<UserOutlined />}
+            style={{ backgroundColor: "#1890ff" }}
+          />
+        </Col>
+        <Col>
+          <Title level={3} style={{ marginBottom: 0 }}>
+            {profile.fullName}
+          </Title>
+          <Text type="secondary">
+            {profile.specialization} • {profile.department}
+          </Text>
+          <br />
+          <Tag color="blue">{profile.gender?.toUpperCase()}</Tag>
+        </Col>
+      </Row>
+
+      <Divider />
+
+      {/* Basic Information */}
+      <Row gutter={[16, 16]}>
+        <Col xs={24} md={12}>
+          <IdcardOutlined /> <Text strong>License:</Text>{" "}
+          {profile.licenseNumber}
+        </Col>
+        <Col xs={24} md={12}>
+          <CalendarOutlined /> <Text strong>Birth Date:</Text>{" "}
+          {dayjs(profile.dateOfBirth).format("MMM D, YYYY")}
+        </Col>
+        <Col xs={24} md={12}>
+          <DollarOutlined /> <Text strong>Consultation Fee:</Text> $
+          {profile.consultationFee}
+        </Col>
+        <Col xs={24} md={12}>
+          <TeamOutlined /> <Text strong>Department:</Text> {profile.department}
+        </Col>
+      </Row>
+
+      <Divider />
+
+      {/* Availability */}
+      <Row gutter={[16, 16]}>
+        <Col xs={24} md={12}>
+          <ClockCircleOutlined /> <Text strong>Available Hours:</Text>{" "}
+          {profile.availableHours}
+        </Col>
+        <Col xs={24} md={12}>
+          <Text strong>Available Days:</Text>{" "}
+          {profile.availableDays?.map((day) => (
+            <Tag key={day} color="green">
+              {day}
+            </Tag>
+          ))}
+        </Col>
+      </Row>
+
+      <Divider />
+
+      {/* Contact Info */}
+      <Row>
+        <Col span={24}>
+          <MailOutlined /> <Text strong>Email:</Text> {profile.email}
+        </Col>
+      </Row>
     </Card>
   );
-}
+};
+
+export default DoctorProfileCard;

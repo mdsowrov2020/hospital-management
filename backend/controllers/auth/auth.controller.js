@@ -15,12 +15,12 @@ import {
 export const register = async (req, res, next) => {
   try {
     // Ensure we have either role or isDoctor
-    if (!req.body.role && typeof req.body.isDoctor === "undefined") {
-      return res.status(400).json({
-        success: false,
-        error: "Either 'role' or 'isDoctor' must be provided",
-      });
-    }
+    // if (!req.body.role && typeof req.body.isDoctor === "undefined") {
+    //   return res.status(400).json({
+    //     success: false,
+    //     error: "Either 'role' or 'isDoctor' must be provided",
+    //   });
+    // }
 
     const { user, token } = await registerUser(req.body);
 

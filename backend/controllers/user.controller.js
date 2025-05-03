@@ -6,6 +6,12 @@ import {
 
 export const createUser = async (req, response) => {
   try {
+    const { email } = req.body;
+    const existingUser = await User.findOne({ where: { email } });
+
+    if (existingUser) {
+      return res.status(409).json({ message: "Email already exists" });
+    }
     const user = await User.create(req.body);
     response.status(201).json(user);
   } catch (error) {

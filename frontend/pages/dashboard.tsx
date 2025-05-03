@@ -3,7 +3,7 @@ import Layout from "../components/layout/AppLayout";
 
 export default function Dashboard() {
   return (
-    <Layout>
+    <>
       <Row gutter={16}>
         <Col span={6}>
           <Card>
@@ -28,12 +28,8 @@ export default function Dashboard() {
       </Row>
 
       <Card title="Recent Appointments" style={{ marginTop: 24 }}>
-        <Table
-          columns={appointmentColumns}
-          dataSource={recentAppointments}
-          pagination={false}
-        />
+        <h2>I am dashboard</h2>
       </Card>
-    </Layout>
+    </>
   );
 }

@@ -24,7 +24,7 @@ export const updatePatient = async (
   patientData: Partial<CreatePatientData>
 ): Promise<Patient> => {
   const response = await api.put(
-    `${endpoints.patients.update}/${String(id)}`,
+    endpoints.patients.update(String(id)), // Call the function with the id
     patientData
   );
   return response.data;

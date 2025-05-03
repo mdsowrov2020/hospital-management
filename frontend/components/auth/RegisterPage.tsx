@@ -20,6 +20,8 @@ import {
 } from "@ant-design/icons";
 import Link from "next/link";
 import Head from "next/head";
+import { registerUser } from "@/lib/api/auth/service";
+import toast from "react-hot-toast";
 
 const { Title, Text } = Typography;
 
@@ -31,14 +33,12 @@ export default function RegisterPage() {
   const onFinish = async (values) => {
     setLoading(true);
     try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-      console.log(values);
-      // message.success("Registration successful!");
-      // form.resetFields();
-      // router.push("/login");
+      await registerUser(values);
+      toast.success("Registration successful!");
+      form.resetFields();
+      router.push("/auth/login");
     } catch (error) {
-      message.error("Registration failed. Please try again.");
+      toast.error("Registration failed. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -72,9 +72,6 @@ export default function RegisterPage() {
               <Title level={3} style={{ color: "#1890ff", marginBottom: 8 }}>
                 Create Your Account
               </Title>
-              <Text type="secondary">
-                Join our platform to access premium features
-              </Text>
             </div>
 
             <Form

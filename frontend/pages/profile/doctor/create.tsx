@@ -1,7 +1,8 @@
+import DoctorProfileForm from "@/components/doctors/DoctorProfileForm";
 import React from "react";
 
 const CreateDoctorProfile = () => {
-  return <div>CreateDoctorProfile</div>;
+  return <DoctorProfileForm />;
 };
 
 export default CreateDoctorProfile;

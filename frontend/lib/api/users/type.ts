@@ -1,6 +1,5 @@
 export interface User {
   id: number;
-
   email: string;
   role: "admin" | "doctor" | "patient";
   createdAt: string;
