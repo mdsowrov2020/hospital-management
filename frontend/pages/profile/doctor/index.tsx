@@ -28,6 +28,8 @@ const DoctorProfile = () => {
     fetchProfile();
   }, [isAuthenticated, loading]);
 
+  if (isLoadingProfile && !isAuthenticated) return <p>Loading ..</p>;
+
   return <DoctorProfileCard profile={profile ? profile : {}} />;
 };
 

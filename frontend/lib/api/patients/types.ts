@@ -9,6 +9,7 @@ export interface Patient {
   bloodType?: string;
   address?: string;
   phoneNumber: string;
+  updatedBy: string;
   User: User;
 }
 

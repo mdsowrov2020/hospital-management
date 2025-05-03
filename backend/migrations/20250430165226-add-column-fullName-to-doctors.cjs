@@ -2,16 +2,15 @@
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
-  async up(queryInterface, Sequelize) {
-    // Add the `fullName` column
-    await queryInterface.addColumn("Doctors", "fullName", {
-      type: Sequelize.STRING,
-      allowNull: true, // Change to false if it's a required field
-    });
+  up: async (queryInterface, Sequelize) => {
+    const tableDescription = await queryInterface.describeTable("Doctors");
+    if (!tableDescription.fullName) {
+      await queryInterface.addColumn("Doctors", "fullName", {
+        type: Sequelize.STRING,
+      });
+    }
   },
-
-  async down(queryInterface, Sequelize) {
-    // Remove the `fullName` column
+  down: async (queryInterface) => {
     await queryInterface.removeColumn("Doctors", "fullName");
   },
 };

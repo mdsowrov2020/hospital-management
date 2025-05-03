@@ -8,16 +8,12 @@ const PatientForm = ({ form }) => {
     <>
       <Form layout="vertical" form={form}>
         <Row gutter={16}>
-          <Col span={12}>
-            <Form.Item hasFeedback label="First name" name="firstName">
+          <Col span={24}>
+            <Form.Item hasFeedback label="Full name" name="fullName">
               <Input placeholder="First name" />
             </Form.Item>
           </Col>
-          <Col span={12}>
-            <Form.Item hasFeedback label="Last name" name="lastName">
-              <Input placeholder="Last name" />
-            </Form.Item>
-          </Col>
+
           <Col span={12}>
             <Form.Item hasFeedback label="Gender" name="gender">
               <Select

@@ -1,67 +1,109 @@
-import { Card, Avatar, Typography, Row, Col } from "antd";
-import { PhoneOutlined } from "@ant-design/icons";
+import React from "react";
+import { Card, Row, Col, Typography, Tag, Avatar, Divider } from "antd";
+import {
+  MailOutlined,
+  CalendarOutlined,
+  IdcardOutlined,
+  ClockCircleOutlined,
+  DollarOutlined,
+  ManOutlined,
+  TeamOutlined,
+  UserOutlined,
+} from "@ant-design/icons";
+import dayjs from "dayjs";
 
 const { Title, Text } = Typography;
 
-const DoctorProfileCard = ({ profile }) => {
-  console.log(profile);
+interface DoctorProfileProps {
+  profile: {
+    fullName: string;
+    specialization: string;
+    licenseNumber: string;
+    dateOfBirth: string;
+    department: string;
+    consultationFee: number;
+    gender: string;
+    availableDays: string[];
+    availableHours: string;
+    createdAt: string;
+    updatedAt: string;
+    email: string;
+  };
+}
 
-  const {
-    fullName,
-    specialization,
-    availableDays,
-    availableHours,
-    licenseNumber,
-  } = profile;
+const DoctorProfileCard: React.FC<{
+  profile: DoctorProfileProps["profile"];
+}> = ({ profile }) => {
   return (
-    <Card
-      style={{ maxWidth: 350, margin: "auto", borderRadius: 12 }}
-      bodyStyle={{ padding: 0 }}
-      cover={
-        <div
-          style={{ background: "#000", padding: "70px 0", textAlign: "center" }}
-        >
-          <Title style={{ color: "#fff", marginBottom: 0 }} level={4}>
-            {fullName}
+    <Card style={{ maxWidth: 900, margin: "40px auto", borderRadius: 12 }}>
+      {/* Header */}
+      <Row align="middle" gutter={24}>
+        <Col>
+          <Avatar
+            size={96}
+            icon={<UserOutlined />}
+            style={{ backgroundColor: "#1890ff" }}
+          />
+        </Col>
+        <Col>
+          <Title level={3} style={{ marginBottom: 0 }}>
+            {profile.fullName}
           </Title>
-          <Text style={{ color: "#ccc" }}>{specialization}</Text>
-        </div>
-      }
-    >
-      <div style={{ textAlign: "center", marginTop: -40 }}>
-        <Avatar
-          size={80}
-          src="/path-to-your-profile-image.png"
-          style={{ border: "3px solid white" }}
-        />
-        <div style={{ marginTop: 12 }}>
-          <Text>
-            456, Estern evenue, Courtage area,
-            <br />
-            New York
+          <Text type="secondary">
+            {profile.specialization} • {profile.department}
           </Text>
-        </div>
-        <div style={{ marginTop: 10 }}>
-          <PhoneOutlined /> <Text>264-625-2583</Text>
-        </div>
-        <Row gutter={16} justify="center" style={{ marginTop: 20 }}>
-          <Col span={8}>
-            <Text strong>564</Text>
-            <br />
-            <Text type="secondary">Following</Text>
-          </Col>
-          <Col span={8}>
-            <Text strong>18k</Text>
-            <br />
-            <Text type="secondary">Followers</Text>
-          </Col>
-          <Col span={8}>
-            <Text strong>565</Text>
-            <br />
-            <Text type="secondary">Post</Text>
-          </Col>
-        </Row>
-      </div>
+          <br />
+          <Tag color="blue">{profile.gender?.toUpperCase()}</Tag>
+        </Col>
+      </Row>
+
+      <Divider />
+
+      {/* Basic Information */}
+      <Row gutter={[16, 16]}>
+        <Col xs={24} md={12}>
+          <IdcardOutlined /> <Text strong>License:</Text>{" "}
+          {profile.licenseNumber}
+        </Col>
+        <Col xs={24} md={12}>
+          <CalendarOutlined /> <Text strong>Birth Date:</Text>{" "}
+          {dayjs(profile.dateOfBirth).format("MMM D, YYYY")}
+        </Col>
+        <Col xs={24} md={12}>
+          <DollarOutlined /> <Text strong>Consultation Fee:</Text> $
+          {profile.consultationFee}
+        </Col>
+        <Col xs={24} md={12}>
+          <TeamOutlined /> <Text strong>Department:</Text> {profile.department}
+        </Col>
+      </Row>
+
+      <Divider />
+
+      {/* Availability */}
+      <Row gutter={[16, 16]}>
+        <Col xs={24} md={12}>
+          <ClockCircleOutlined /> <Text strong>Available Hours:</Text>{" "}
+          {profile.availableHours}
+        </Col>
+        <Col xs={24} md={12}>
+          <Text strong>Available Days:</Text>{" "}
+          {profile.availableDays?.map((day) => (
+            <Tag key={day} color="green">
+              {day}
+            </Tag>
+          ))}
+        </Col>
+      </Row>
+
+      <Divider />
+
+      {/* Contact Info */}
+      <Row>
+        <Col span={24}>
+          <MailOutlined /> <Text strong>Email:</Text> {profile.email}
+        </Col>
+      </Row>
     </Card>
   );
 };

@@ -40,6 +40,10 @@ const Patient = sequelize.define(
       type: DataTypes.STRING,
       allowNull: true,
     },
+    updatedBy: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
   },
   {
     tableName: "Patients", // explicit table name

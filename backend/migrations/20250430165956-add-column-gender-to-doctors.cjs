@@ -2,16 +2,25 @@
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
-  async up(queryInterface, Sequelize) {
-    // Add the `gender` column
-    await queryInterface.addColumn("Doctors", "gender", {
-      type: Sequelize.STRING,
-      allowNull: true, // Set to false if required
-    });
+  up: async (queryInterface, Sequelize) => {
+    const tableDescription = await queryInterface.describeTable("Doctors");
+
+    // Only add gender column if it doesn't exist
+    if (!tableDescription.gender) {
+      await queryInterface.addColumn("Doctors", "gender", {
+        type: Sequelize.STRING,
+        allowNull: true, // Set to false if you want it required
+        defaultValue: null, // Add if you want a default value
+      });
+    }
   },
 
-  async down(queryInterface, Sequelize) {
-    // Remove the `gender` column
-    await queryInterface.removeColumn("Doctors", "gender");
+  down: async (queryInterface) => {
+    const tableDescription = await queryInterface.describeTable("Doctors");
+
+    // Only remove gender column if it exists
+    if (tableDescription.gender) {
+      await queryInterface.removeColumn("Doctors", "gender");
+    }
   },
 };

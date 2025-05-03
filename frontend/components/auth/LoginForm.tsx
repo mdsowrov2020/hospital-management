@@ -35,8 +35,12 @@ export default function LoginPage() {
         password: values.password,
       });
       login(response.token, response.user);
-      const profile = await getProfile();
+
       toast.success("Successfully logged in..");
+      if (response.user.role === "admin") {
+        router.push("/dashboard");
+      }
+      const profile = await getProfile();
       if (response.user.role === "doctor") {
         if (profile.fullName !== null || profile.licenseNumber !== null) {
           router.push("/profile/doctor");
