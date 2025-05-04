@@ -34,20 +34,27 @@ export default function LoginPage() {
         email: values.email,
         password: values.password,
       });
-      login(response.token, response.user);
 
+      await login(response.token, response.user);
       toast.success("Successfully logged in..");
+
+      // ✅ Early redirect for admin
       if (response.user.role === "admin") {
         router.push("/dashboard");
+        return;
       }
+
+      // ✅ Only call getProfile for non-admin users
       const profile = await getProfile();
+
       if (response.user.role === "doctor") {
         if (profile.fullName !== null || profile.licenseNumber !== null) {
           router.push("/profile/doctor");
         } else {
-          router.push("/profile/patient/create");
+          router.push("/profile/doctor/create");
         }
       }
+
       if (response.user.role === "patient") {
         if (profile.fullName !== null) {
           router.push("/profile/patient");

@@ -1,6 +1,7 @@
 import PatientProfile from "@/components/patients/PatientProfile";
 import { useAuth } from "@/context/AuthProvider";
 import { getProfile } from "@/lib/api/profile/service";
+import { Button, Col, Row } from "antd";
 import React, { useEffect, useState } from "react";
 
 const PatientProfilePage = () => {
@@ -29,7 +30,12 @@ const PatientProfilePage = () => {
   }, [isAuthenticated, loading]);
 
   if (isLoadingProfile && !isAuthenticated) return <p>Loading ..</p>;
-  return <PatientProfile profile={profile ? profile : {}} />;
+  return (
+    <>
+      {" "}
+      <PatientProfile profile={profile ? profile : {}} />
+    </>
+  );
 };
 
 export default PatientProfilePage;

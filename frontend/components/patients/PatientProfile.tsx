@@ -1,5 +1,5 @@
 import React from "react";
-import { Card, Row, Col, Typography, Tag, Avatar, Divider } from "antd";
+import { Card, Row, Col, Typography, Tag, Avatar, Divider, Button } from "antd";
 import {
   CalendarOutlined,
   EnvironmentOutlined,
@@ -24,6 +24,27 @@ interface PatientProfileProps {
   };
 }
 
+const iconStyle = {
+  background: "#e6f7ff",
+  color: "#1890ff",
+  fontSize: 18,
+  padding: 8,
+  borderRadius: "50%",
+  marginRight: 10,
+};
+
+const iconStyleRed = {
+  ...iconStyle,
+  background: "#fff1f0",
+  color: "#f5222d",
+};
+
+const iconStyleGreen = {
+  ...iconStyle,
+  background: "#f6ffed",
+  color: "#52c41a",
+};
+
 const PatientProfile: React.FC<PatientProfileProps> = ({ profile }) => {
   return (
     <Card style={{ maxWidth: 800, margin: "40px auto", borderRadius: 12 }}>
@@ -40,8 +61,9 @@ const PatientProfile: React.FC<PatientProfileProps> = ({ profile }) => {
           <Title level={3} style={{ marginBottom: 0 }}>
             {profile.fullName}
           </Title>
-          <Tag color="blue">{profile.gender?.toUpperCase()}</Tag>
-          <Tag color="red">{profile.bloodType}</Tag>
+          <Tag className="tag-gender">{profile.gender?.toUpperCase()}</Tag>
+
+          <Tag className="tag-blood">{profile.bloodType}</Tag>
         </Col>
       </Row>
 
@@ -50,23 +72,39 @@ const PatientProfile: React.FC<PatientProfileProps> = ({ profile }) => {
       {/* Personal Info */}
       <Row gutter={[16, 16]}>
         <Col xs={24} md={12}>
-          <CalendarOutlined /> <Text strong>Date of Birth:</Text>{" "}
+          <CalendarOutlined style={iconStyle} />
+          <Text strong>Date of Birth:</Text>{" "}
           {dayjs(profile.dateOfBirth).format("MMMM D, YYYY")}
         </Col>
         <Col xs={24} md={12}>
-          <HeartOutlined /> <Text strong>Blood Type:</Text> {profile.bloodType}
+          <HeartOutlined style={iconStyleRed} />
+          <Text strong>Blood Type:</Text> {profile.bloodType}
         </Col>
       </Row>
 
       <Divider />
 
-      {/* Contact Info */}
       <Row gutter={[16, 16]}>
         <Col xs={24} md={12}>
-          <PhoneOutlined /> <Text strong>Phone:</Text> {profile.phoneNumber}
+          <PhoneOutlined style={iconStyleGreen} />
+          <Text strong>Phone:</Text> {profile.phoneNumber}
         </Col>
         <Col xs={24} md={12}>
-          <EnvironmentOutlined /> <Text strong>Address:</Text> {profile.address}
+          <EnvironmentOutlined style={iconStyle} />
+          <Text strong>Address:</Text> {profile.address}
+        </Col>
+      </Row>
+      <Divider />
+      <Row gutter={[16, 16]} justify="start">
+        <Col>
+          <Button type="primary" size="large" className="custom-button medium">
+            Medical records
+          </Button>
+        </Col>
+        <Col>
+          <Button type="primary" size="large" className="custom-button medium">
+            Appointments
+          </Button>
         </Col>
       </Row>
     </Card>

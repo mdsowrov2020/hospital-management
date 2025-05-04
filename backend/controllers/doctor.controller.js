@@ -15,7 +15,7 @@ export const getDoctors = async (req, res) => {
       include: [
         {
           model: User,
-          attributes: ["firstName", "lastName", "email"],
+          attributes: ["email", "role"],
         },
       ],
     });
