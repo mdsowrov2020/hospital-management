@@ -1,42 +1,77 @@
 import React from "react";
-import { Card, Row, Col, Typography, Tag, Avatar, Divider } from "antd";
+import {
+  Card,
+  Row,
+  Col,
+  Typography,
+  Tag,
+  Avatar,
+  Divider,
+  Skeleton,
+  Tooltip,
+} from "antd";
 import {
   MailOutlined,
   CalendarOutlined,
   IdcardOutlined,
   ClockCircleOutlined,
   DollarOutlined,
-  ManOutlined,
   TeamOutlined,
   UserOutlined,
 } from "@ant-design/icons";
 import dayjs from "dayjs";
+import { DoctorProfile } from "@/context/types";
 
 const { Title, Text } = Typography;
 
 interface DoctorProfileProps {
-  profile: {
-    fullName: string;
-    specialization: string;
-    licenseNumber: string;
-    dateOfBirth: string;
-    department: string;
-    consultationFee: number;
-    gender: string;
-    availableDays: string[];
-    availableHours: string;
-    createdAt: string;
-    updatedAt: string;
-    email: string;
-  };
+  profile: DoctorProfile | null;
 }
 
-const DoctorProfileCard: React.FC<{
-  profile: DoctorProfileProps["profile"];
-}> = ({ profile }) => {
+const iconStyleBase = {
+  fontSize: 18,
+  padding: 8,
+  borderRadius: "50%",
+  marginRight: 10,
+  display: "inline-flex",
+  alignItems: "center",
+  justifyContent: "center",
+};
+
+const iconStyles = {
+  default: {
+    ...iconStyleBase,
+    background: "#e6f7ff",
+    color: "#1890ff",
+  },
+  red: {
+    ...iconStyleBase,
+    background: "#fff1f0",
+    color: "#f5222d",
+  },
+  green: {
+    ...iconStyleBase,
+    background: "#f6ffed",
+    color: "#52c41a",
+  },
+  gold: {
+    ...iconStyleBase,
+    background: "#fffbe6",
+    color: "#faad14",
+  },
+};
+
+const DoctorProfileCard: React.FC<DoctorProfileProps> = ({ profile }) => {
+  if (!profile) {
+    return (
+      <Card style={{ maxWidth: 900, margin: "40px auto", borderRadius: 12 }}>
+        <Skeleton active />
+      </Card>
+    );
+  }
+
   return (
     <Card style={{ maxWidth: 900, margin: "40px auto", borderRadius: 12 }}>
-      {/* Header */}
       <Row align="middle" gutter={24}>
         <Col>
           <Avatar
@@ -46,50 +81,59 @@ const DoctorProfileCard: React.FC<{
           />
         </Col>
         <Col>
-          <Title level={3} style={{ marginBottom: 0 }}>
+          <Title level={3} style={{ marginBottom: 4 }}>
             {profile.fullName}
           </Title>
           <Text type="secondary">
             {profile.specialization} • {profile.department}
           </Text>
           <br />
-          <Tag color="blue">{profile.gender?.toUpperCase()}</Tag>
+          <Tag className="tag-gender">{profile.gender?.toUpperCase()}</Tag>
         </Col>
       </Row>
 
       <Divider />
 
-      {/* Basic Information */}
       <Row gutter={[16, 16]}>
         <Col xs={24} md={12}>
-          <IdcardOutlined /> <Text strong>License:</Text>{" "}
-          {profile.licenseNumber}
+          <IdcardOutlined style={iconStyles.default} />
+          <Text strong>License:</Text> {profile.licenseNumber}
         </Col>
         <Col xs={24} md={12}>
-          <CalendarOutlined /> <Text strong>Birth Date:</Text>{" "}
+          <CalendarOutlined style={iconStyles.red} />
+          <Text strong>Birth Date:</Text>{" "}
           {dayjs(profile.dateOfBirth).format("MMM D, YYYY")}
         </Col>
         <Col xs={24} md={12}>
-          <DollarOutlined /> <Text strong>Consultation Fee:</Text> $
-          {profile.consultationFee}
+          <DollarOutlined style={iconStyles.gold} />
+          <Text strong>Consultation Fee:</Text> ${profile.consultationFee}
         </Col>
         <Col xs={24} md={12}>
-          <TeamOutlined /> <Text strong>Department:</Text> {profile.department}
+          <TeamOutlined style={iconStyles.green} />
+          <Text strong>Department:</Text> {profile.department}
         </Col>
       </Row>
 
       <Divider />
 
-      {/* Availability */}
       <Row gutter={[16, 16]}>
         <Col xs={24} md={12}>
-          <ClockCircleOutlined /> <Text strong>Available Hours:</Text>{" "}
-          {profile.availableHours}
+          <ClockCircleOutlined style={iconStyles.default} />
+          <Text strong>Available Hours:</Text> {profile.availableHours}
         </Col>
         <Col xs={24} md={12}>
           <Text strong>Available Days:</Text>{" "}
           {profile.availableDays?.map((day) => (
-            <Tag key={day} color="green">
+            <Tag
+              key={day}
+              color="green"
+              style={{
+                fontWeight: "bold",
+                fontSize: 13,
+                padding: "2px 10px",
+                marginBottom: 4,
+              }}
+            >
               {day}
             </Tag>
           ))}
@@ -98,10 +142,10 @@ const DoctorProfileCard: React.FC<{
 
       <Divider />
 
-      {/* Contact Info */}
       <Row>
         <Col span={24}>
-          <MailOutlined /> <Text strong>Email:</Text> {profile.email}
+          <MailOutlined style={iconStyles.default} />
+          <Text strong>Email:</Text> {profile.email}
         </Col>
       </Row>
     </Card>

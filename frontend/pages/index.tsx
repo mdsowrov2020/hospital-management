@@ -1,7 +1,9 @@
+import Main from "@/components/landing/Main";
+
 export default function Home() {
   return (
     <>
-      <h2>Home page</h2>
+      <Main />
     </>
   );
 }

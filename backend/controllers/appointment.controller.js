@@ -47,11 +47,11 @@ export const getAppointment = async (req, res) => {
       include: [
         {
           model: Doctor,
-          include: [{ model: User, attributes: ["firstName", "lastName"] }],
+          include: [{ model: User, attributes: ["email", "role"] }],
         },
         {
           model: Patient,
-          include: [{ model: User, attributes: ["firstName", "lastName"] }],
+          include: [{ model: User, attributes: ["email", "role"] }],
         },
       ],
     });
@@ -66,6 +66,21 @@ export const getAppointment = async (req, res) => {
   }
 };
 
+export const getAppointmentByPatientId = async (req, res) => {
+  const { patientId } = req.params;
+  try {
+    const appointment = await Appointment.findOne({ where: { patientId } });
+    if (!appointment) {
+      return res
+        .status(404)
+        .json({ message: "No appointment found on this patient id" });
+    }
+    res.status(200).json(appointment);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+};
+
 export const createAppointment = async (req, res) => {
   try {
     const appointment = await Appointment.create(req.body);
@@ -73,11 +88,11 @@ export const createAppointment = async (req, res) => {
       include: [
         {
           model: Doctor,
-          include: [{ model: User, attributes: ["firstName", "lastName"] }],
+          include: [{ model: User, attributes: ["email", "role"] }],
         },
         {
           model: Patient,
-          include: [{ model: User, attributes: ["firstName", "lastName"] }],
+          include: [{ model: User, attributes: ["email", "role"] }],
         },
       ],
     });
@@ -99,11 +114,11 @@ export const updateAppointment = async (req, res) => {
         include: [
           {
             model: Doctor,
-            include: [{ model: User, attributes: ["firstName", "lastName"] }],
+            include: [{ model: User, attributes: ["email", "role"] }],
           },
           {
             model: Patient,
-            include: [{ model: User, attributes: ["firstName", "lastName"] }],
+            include: [{ model: User, attributes: ["email", "role"] }],
           },
         ],
       });

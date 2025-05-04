@@ -32,13 +32,19 @@ const TopHeader = () => {
 
   useEffect(() => {
     const fetchProfile = async () => {
-      if (user?.role !== "admin") {
+      if (!user || !user.role || user.role === "admin") return;
+
+      try {
         const data = await getProfile();
         setProfile(data);
+      } catch (err) {
+        console.error("Failed to fetch profile:", err);
+        setProfile(undefined);
       }
     };
+
     fetchProfile();
-  }, [user?.role]); // Run only when user's role is available
+  }, [user?.role]);
 
   const menu = (
     <Menu onClick={handleMenuClick}>
