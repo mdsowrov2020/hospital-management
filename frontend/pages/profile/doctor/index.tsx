@@ -23,6 +23,6 @@ const DoctorProfile = () => {
   return <DoctorProfileCard profile={doctorProfile} />;
 };
 
-export default function ProfilePage() {
+export default function DoctorProfilePage() {
   return <DoctorProfile />;
 }

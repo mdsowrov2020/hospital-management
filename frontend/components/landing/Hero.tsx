@@ -7,10 +7,10 @@ import { useRouter } from "next/router";
 const { Title, Paragraph, Text } = Typography;
 
 export default function Hero() {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, user } = useAuth();
   const router = useRouter();
   const createAppointment = () => {
-    if (isAuthenticated) {
+    if (isAuthenticated && user?.role === "patient") {
       router.push("/profile/patient/appointment/create");
     } else {
       router.push("/auth/login");

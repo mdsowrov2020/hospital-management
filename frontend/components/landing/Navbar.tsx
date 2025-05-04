@@ -17,10 +17,10 @@ const items = [
 ];
 
 const Navbar = () => {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, user } = useAuth();
   const router = useRouter();
   const createAppointment = () => {
-    if (isAuthenticated) {
+    if (isAuthenticated && user?.role === "patient") {
       router.push("/profile/patient/appointment/create");
     } else {
       router.push("/auth/login");
