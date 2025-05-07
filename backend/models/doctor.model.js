@@ -55,6 +55,11 @@ const Doctor = sequelize.define("Doctor", {
     type: DataTypes.STRING,
     allowNull: true,
   },
+  dailyAppointmentLimit: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    defaultValue: 10,
+  },
 });
 
 export default Doctor;

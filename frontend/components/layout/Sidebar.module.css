@@ -1,0 +1,94 @@
+/* Sidebar.module.css */
+.sidebarContainer {
+  background: white;
+  height: 100vh;
+  border-right: 1px solid #f0f0f0;
+}
+
+.logoContainer {
+  /* padding: 24px 16px 16px; */
+  height: 70px;
+  text-align: center;
+  border-bottom: 1px solid #f0f0f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.logoText {
+  color: #1890ff;
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.menuContainer {
+  background: transparent;
+  border-right: none;
+  padding: 16px 8px;
+}
+
+.menuItem {
+  border-radius: 8px;
+  margin-bottom: 4px;
+  transition: all 0.2s ease;
+  height: 40px;
+  line-height: 40px;
+  display: flex;
+  align-items: center;
+}
+
+.menuItem:hover {
+  background-color: #f5f5f5 !important;
+}
+
+.menuIcon {
+  font-size: 16px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 10px;
+  transition: all 0.2s ease;
+}
+
+/* Icon color styles matching DoctorProfileCard */
+.defaultIcon .menuIcon {
+  background: #e6f7ff;
+  color: #1890ff;
+}
+
+.blueIcon .menuIcon {
+  background: #e6f7ff;
+  color: #1890ff;
+}
+
+.redIcon .menuIcon {
+  background: #fff1f0;
+  color: #f5222d;
+}
+
+.greenIcon .menuIcon {
+  background: #f6ffed;
+  color: #52c41a;
+}
+
+.goldIcon .menuIcon {
+  background: #fffbe6;
+  color: #faad14;
+}
+
+/* Selected item style */
+.menuItem.ant-menu-item-selected {
+  background-color: #e6f7ff !important;
+}
+
+.menuItem.ant-menu-item-selected .menuIcon {
+  transform: scale(1.1);
+}
+
+.menuItem.ant-menu-item-selected::after {
+  display: none;
+}

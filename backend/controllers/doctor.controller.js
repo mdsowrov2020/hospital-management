@@ -1,3 +1,4 @@
+import { where } from "sequelize";
 import { Doctor, User } from "../models/index.js";
 
 export const createDoctor = async (req, res) => {
@@ -36,8 +37,21 @@ export const getDoctor = async (req, res) => {
         },
       ],
     });
-    if (!doctor) res.status(404).json({ message: "Doctor not found" });
+    if (!doctor) return res.status(404).json({ message: "Doctor not found" });
     res.status(200).json(doctor);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+};
+
+export const getAvailableDaysById = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const doctor = await Doctor.findByPk(id);
+    if (!doctor) return res.status(404).json({ message: "Doctor not found" });
+    const { availableDays } = doctor;
+    res.status(200).json(availableDays);
   } catch (error) {
     res.status(400).json({ message: error.message });
   }

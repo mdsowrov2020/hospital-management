@@ -83,7 +83,13 @@ export const getAppointmentByPatientId = async (req, res) => {
 
 export const createAppointment = async (req, res) => {
   try {
-    const appointment = await Appointment.create(req.body);
+    const appointmentData = {
+      ...req.body,
+      status: "scheduled",
+    };
+
+    const appointment = await Appointment.create(appointmentData);
+
     const newAppointment = await Appointment.findByPk(appointment.id, {
       include: [
         {
@@ -96,6 +102,7 @@ export const createAppointment = async (req, res) => {
         },
       ],
     });
+
     res.status(201).json(newAppointment);
   } catch (error) {
     res.status(400).json({ message: error.message });

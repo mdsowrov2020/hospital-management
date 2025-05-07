@@ -1,6 +1,6 @@
 import api from "../base/base";
 import endpoints from "../base/endpoint";
-import { Doctor } from "./types";
+import { AvailableDay, Doctor } from "./types";
 
 // Get all doctors
 export const getDoctors = async (): Promise<Doctor[]> => {
@@ -11,6 +11,15 @@ export const getDoctors = async (): Promise<Doctor[]> => {
 // Get a doctor by ID
 export const getDoctorById = async (id: number): Promise<Doctor> => {
   const response = await api.get(`${endpoints.doctors.detail}/${String(id)}`);
+  return response.data;
+};
+
+// Get Doctor's Available days by ID
+
+export const getDoctorAvailableDaysByID = async (
+  id: number
+): Promise<AvailableDay[]> => {
+  const response = await api.get(endpoints.doctors.days(String(id)));
   return response.data;
 };
 

@@ -25,11 +25,14 @@ const endpoints = {
     list: "/doctors",
     create: "/doctors",
     detail: (id: string) => `/doctors/${id}`,
+    days: (id: string) => `/doctors/${id}/available-days`,
     update: (id: string) => `/doctors/${id}`,
   },
   appointments: {
     base: "/appointments",
     list: "/appointments",
+    create: "/appointments",
+
     detail: (id: string) => `/appointments/${id}`,
   },
   medicalRecords: {
