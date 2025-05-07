@@ -8,6 +8,7 @@ import {
   UserOutlined,
 } from "@ant-design/icons";
 import dayjs from "dayjs";
+import { useRouter } from "next/router";
 
 const { Title, Text } = Typography;
 
@@ -46,6 +47,7 @@ const iconStyleGreen = {
 };
 
 const PatientProfile: React.FC<PatientProfileProps> = ({ profile }) => {
+  const router = useRouter();
   return (
     <Card style={{ maxWidth: 800, margin: "40px auto", borderRadius: 12 }}>
       {/* Header */}
@@ -102,7 +104,12 @@ const PatientProfile: React.FC<PatientProfileProps> = ({ profile }) => {
           </Button>
         </Col>
         <Col>
-          <Button type="primary" size="large" className="custom-button medium">
+          <Button
+            type="primary"
+            size="large"
+            className="custom-button medium"
+            onClick={() => router.push("/appointments/create")}
+          >
             Appointments
           </Button>
         </Col>

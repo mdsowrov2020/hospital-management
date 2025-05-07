@@ -2,6 +2,7 @@ import { Router } from "express";
 import {
   createDoctor,
   deleteDoctor,
+  getAvailableDaysById,
   getDoctor,
   getDoctors,
   updateDoctor,
@@ -10,6 +11,7 @@ import {
 const router = Router();
 router.get("/", getDoctors);
 router.get("/:id", getDoctor);
+router.get("/:id/available-days", getAvailableDaysById);
 router.post("/", createDoctor);
 router.put("/:id", updateDoctor);
 router.delete("/:id", deleteDoctor);

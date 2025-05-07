@@ -9,68 +9,73 @@ import {
 import { Layout, Menu } from "antd";
 import Link from "next/link";
 import { useAuth } from "@/context/AuthProvider";
+import styles from "./Sidebar.module.css"; // Create this CSS module file
 
 const { Sider } = Layout;
 
-// Helper function to create menu items with proper structure
-const createMenuItems = (role) => {
-  const allItems = [
-    {
-      key: "1",
-      icon: <AppstoreOutlined />,
-      label: <Link href="/">Dashboards</Link>,
-      roles: ["admin"],
-    },
-    {
-      key: "2",
-      icon: <UserOutlined />,
-      label: <Link href="/doctors">Doctors</Link>,
-      roles: ["admin"],
-    },
-    {
-      key: "3",
-      icon: <SnippetsOutlined />,
-      label: <Link href="/appointments">Appointments</Link>,
-      roles: ["admin", "doctor", "patient"],
-    },
-    {
-      key: "4",
-      icon: <FileOutlined />,
-      label: <Link href="/medical-records">Medical records</Link>,
-      roles: ["admin", "doctor", "patient"],
-    },
-    {
-      key: "5",
-      icon: <UsergroupAddOutlined />,
-      label: <Link href="/patients">Patients</Link>,
-      roles: ["admin"],
-    },
-  ];
-
-  return allItems
-    .filter((item) => !item.roles || (role && item.roles.includes(role)))
-    .map((item) => ({
-      key: item.key,
-      icon: item.icon,
-      label: item.label,
-    }));
-};
+const menuItems = [
+  {
+    key: "1",
+    icon: <AppstoreOutlined className={styles.menuIcon} />,
+    label: <Link href="/">Dashboard</Link>,
+    iconType: "default",
+    roles: ["admin"],
+  },
+  {
+    key: "2",
+    icon: <UserOutlined className={styles.menuIcon} />,
+    label: <Link href="/doctors">Doctors</Link>,
+    iconType: "blue",
+    roles: ["admin"],
+  },
+  {
+    key: "3",
+    icon: <SnippetsOutlined className={styles.menuIcon} />,
+    label: <Link href="/appointments">Appointments</Link>,
+    iconType: "red",
+    roles: ["admin", "doctor", "patient"],
+  },
+  {
+    key: "4",
+    icon: <FileOutlined className={styles.menuIcon} />,
+    label: <Link href="/medical-records">Medical Records</Link>,
+    iconType: "green",
+    roles: ["admin", "doctor", "patient"],
+  },
+  {
+    key: "5",
+    icon: <UsergroupAddOutlined className={styles.menuIcon} />,
+    label: <Link href="/patients">Patients</Link>,
+    iconType: "gold",
+    roles: ["admin"],
+  },
+];
 
 const Sidebar = () => {
   const { user } = useAuth();
+
+  const filteredItems = menuItems.filter(
+    (item) => !item.roles || (user?.role && item.roles.includes(user.role))
+  );
 
   return (
     <Sider
       breakpoint="lg"
       collapsedWidth="0"
-      style={{ background: "white", height: "100vh", border: "none" }}
       width={250}
+      className={styles.sidebarContainer}
     >
-      <div />
+      <div className={styles.logoContainer}>
+        <h2 className={styles.logoText}>HMS</h2>
+      </div>
       <Menu
         defaultSelectedKeys={["1"]}
-        items={createMenuItems(user?.role)}
-        style={{ background: "transparent", border: "none" }}
+        mode="inline"
+        className={styles.menuContainer}
+        items={filteredItems.map((item) => ({
+          ...item,
+          className: `${styles.menuItem} ${styles[item.iconType + "Icon"]}`,
+        }))}
       />
     </Sider>
   );

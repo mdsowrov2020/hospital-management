@@ -69,6 +69,7 @@ const TopHeader = () => {
         justifyContent: "space-between",
         alignItems: "center",
         background: "#fff",
+        height: "70px",
       }}
     >
       <CustomBreadCrumb />

@@ -11,9 +11,12 @@ import {
   message,
 } from "antd";
 import dayjs from "dayjs";
-import axios from "axios"; // Replace with your fetch if needed
+
 import { useForm } from "antd/es/form/Form";
-import { getDoctors } from "@/lib/api/doctors/service";
+import {
+  getDoctorAvailableDaysByID,
+  getDoctors,
+} from "@/lib/api/doctors/service";
 import { Doctor } from "@/lib/api/doctors/types";
 
 const { Title } = Typography;
@@ -31,10 +34,10 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
 }) => {
   const [form] = useForm();
   const [doctors, setDoctors] = useState<Doctor[]>([]);
+  const [availableDays, setAvailableDays] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    // Fetch doctor list
     const fetchDoctors = async () => {
       try {
         const res = await getDoctors(); // Update endpoint as needed
@@ -47,6 +50,28 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
 
     fetchDoctors();
   }, []);
+
+  useEffect(() => {
+    const doctorId = form.getFieldValue("doctorId");
+    if (doctorId) {
+      fetchAvailableDays(doctorId);
+    }
+  }, [form.getFieldValue("doctorId")]);
+
+  const fetchAvailableDays = async (doctorId: number) => {
+    try {
+      const data = await getDoctorAvailableDaysByID(doctorId);
+      setAvailableDays(data);
+      console.log("Available days: ", data);
+    } catch (err: any) {
+      message.error("Failed to fetch available days");
+    }
+  };
+
+  const handleDoctorChange = async (doctorId: number) => {
+    form.setFieldValue("doctorId", doctorId);
+    await fetchAvailableDays(doctorId);
+  };
 
   const handleFinish = (values: any) => {
     const payload = {
@@ -89,6 +114,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
               label: doc.fullName,
               value: doc.id,
             }))}
+            onChange={handleDoctorChange}
           />
         </Form.Item>
 
@@ -97,7 +123,13 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
           label="Appointment Date"
           rules={[{ required: true, message: "Please pick a date" }]}
         >
-          <DatePicker style={{ width: "100%" }} />
+          <DatePicker
+            style={{ width: "100%" }}
+            disabledDate={(date) => {
+              const day = date.format("dddd");
+              return !availableDays.includes(day);
+            }}
+          />
         </Form.Item>
 
         <Form.Item
@@ -106,20 +138,6 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
           rules={[{ required: true, message: "Please select a time" }]}
         >
           <TimePicker style={{ width: "100%" }} format="HH:mm" />
-        </Form.Item>
-
-        <Form.Item
-          name="status"
-          label="Status"
-          rules={[{ required: true, message: "Please select a status" }]}
-        >
-          <Select
-            options={[
-              { label: "Scheduled", value: "scheduled" },
-              { label: "Completed", value: "completed" },
-              { label: "Cancelled", value: "cancelled" },
-            ]}
-          />
         </Form.Item>
 
         <Form.Item

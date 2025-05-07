@@ -1,5 +1,12 @@
 import { User } from "../users/type";
-
+export type AvailableDay =
+  | "Monday"
+  | "Tuesday"
+  | "Wednesday"
+  | "Thursday"
+  | "Friday"
+  | "Saturday"
+  | "Sunday";
 export interface Doctor {
   id: number;
   fullName?: string;
@@ -23,6 +30,6 @@ export interface CreateDoctorData {
   department?: string;
   consultationFee?: number;
   gender?: "male" | "female" | "other";
-  availableDays?: string[];
+  availableDays?: AvailableDay[];
   availableHours?: string;
 }
