@@ -174,11 +174,39 @@ export const deleteAppointment = async (req, res) => {
   }
 };
 
-export const getAppointmentByDoctorID = async (req, res) => {
+// export const getAppointmentByDoctorID = async (req, res) => {
+//   try {
+//     const { doctorId } = req.params;
+//     const appointments = await Appointment.findAll({
+//       where: { doctorId: doctorId },
+//       include: [
+//         {
+//           model: Patient,
+//           include: [{ model: User, attributes: ["email"] }],
+//         },
+//       ],
+//     });
+//     if (!appointments) {
+//       return res
+//         .status(404)
+//         .json({ message: "No appointment found on this doctor id" });
+//     }
+//     res.status(200).json(appointments);
+//   } catch (error) {
+//     res.status(400).json({ message: error.message });
+//   }
+// };
+
+export const getAppointmentsByDoctorID = async (req, res) => {
   try {
     const { doctorId } = req.params;
+    const { date } = req.query; // Get the optional date query param
+
+    const whereClause = { doctorId };
+    if (date) whereClause.appointmentDate = date; // Filter by date if provided
+
     const appointments = await Appointment.findAll({
-      where: { doctorId: doctorId },
+      where: whereClause,
       include: [
         {
           model: Patient,
@@ -186,11 +214,11 @@ export const getAppointmentByDoctorID = async (req, res) => {
         },
       ],
     });
-    if (!appointments) {
-      return res
-        .status(404)
-        .json({ message: "No appointment found on this doctor id" });
+
+    if (!appointments.length) {
+      return res.status(404).json({ message: "No appointments found" });
     }
+
     res.status(200).json(appointments);
   } catch (error) {
     res.status(400).json({ message: error.message });

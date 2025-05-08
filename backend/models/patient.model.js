@@ -39,7 +39,7 @@ const Patient = sequelize.define(
     phoneNumber: {
       type: DataTypes.STRING,
       allowNull: true,
-      unique: true,
+      // unique: true,
     },
     updatedBy: {
       type: DataTypes.STRING,
