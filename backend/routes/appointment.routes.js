@@ -3,6 +3,7 @@ import {
   createAppointment,
   deleteAppointment,
   getAppointment,
+  getAppointmentByDoctorID,
   getAppointmentByPatientId,
   getAppointments,
   updateAppointment,
@@ -14,6 +15,7 @@ router.get("/", getAppointments);
 router.post("/", createAppointment);
 router.get("/:id", getAppointment);
 router.get("/by-patient/:patientId", getAppointmentByPatientId);
+router.get("/by-doctor/:doctorId", getAppointmentByDoctorID);
 
 router.put("/:id", updateAppointment);
 router.delete("/:id", deleteAppointment);
