@@ -60,6 +60,13 @@ const Doctor = sequelize.define("Doctor", {
     allowNull: false,
     defaultValue: 10,
   },
+  phoneNumber: {
+    type: DataTypes.STRING,
+    allowNull: true,
+    // validate: {
+    //   is: /^[0-9\-+\s()]{7,20}$/i,
+    // },
+  },
 });
 
 export default Doctor;
