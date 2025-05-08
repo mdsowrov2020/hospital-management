@@ -34,6 +34,7 @@ const endpoints = {
     create: "/appointments",
 
     detail: (id: string) => `/appointments/${id}`,
+    getByDoctor: (id: string) => `appointments/by-doctor/${id}`,
   },
   medicalRecords: {
     base: "/medical-records",

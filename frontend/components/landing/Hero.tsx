@@ -11,7 +11,7 @@ export default function Hero() {
   const router = useRouter();
   const createAppointment = () => {
     if (isAuthenticated && user?.role === "patient") {
-      router.push("/profile/patient/appointment/create");
+      router.push("/appointments/create");
     } else {
       router.push("/auth/login");
     }
