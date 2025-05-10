@@ -40,7 +40,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
   useEffect(() => {
     const fetchDoctors = async () => {
       try {
-        const res = await getDoctors(); // Update endpoint as needed
+        const res = await getDoctors();
         console.log("Doctors list: ", res);
         setDoctors(res);
       } catch (err) {
@@ -127,7 +127,9 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
             style={{ width: "100%" }}
             disabledDate={(date) => {
               const day = date.format("dddd");
-              return !availableDays.includes(day);
+              const isPast = date.isBefore(dayjs(), "day");
+              const isUnavailable = !availableDays.includes(day);
+              return isPast || isUnavailable;
             }}
           />
         </Form.Item>

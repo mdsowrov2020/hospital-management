@@ -9,7 +9,7 @@ const { Header } = Layout;
 
 const TopHeader = () => {
   const [profile, setProfile] = useState();
-  const { user, logout, loading } = useAuth();
+  const { user, logout, loading, doctorProfile, patientProfile } = useAuth();
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
@@ -59,7 +59,10 @@ const TopHeader = () => {
   const displayName =
     user?.role === "admin"
       ? "Admin"
-      : profile?.fullName || user?.name || "User";
+      : doctorProfile?.fullName ||
+        patientProfile?.fullName ||
+        user?.email ||
+        "User";
 
   return (
     <Header

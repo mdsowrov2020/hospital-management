@@ -47,19 +47,47 @@ const Navbar = () => {
           />
         </div>
         <div className="appointment-btn">
-          <Button
-            type="primary"
-            size="large"
-            className="custom-button"
-            icon={<PlusOutlined />}
-            onClick={createAppointment}
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-            }}
-          >
-            GET APPOINTMENT
-          </Button>
+          {!isAuthenticated ? (
+            <Button
+              type="default"
+              size="large"
+              className="login-button"
+              onClick={() => router.push("/auth/login")}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                padding: "0 1.5rem",
+                borderRadius: "8px",
+                border: "2px solid #1890ff",
+                color: "#1890ff",
+                fontWeight: "bold",
+                letterSpacing: "0.5px",
+                transition: "all 0.3s ease",
+              }}
+              onMouseEnter={(e) =>
+                (e.currentTarget.style.backgroundColor = "#e6f7ff")
+              }
+              onMouseLeave={(e) =>
+                (e.currentTarget.style.backgroundColor = "transparent")
+              }
+            >
+              LOGIN
+            </Button>
+          ) : (
+            <Button
+              type="primary"
+              size="large"
+              className="custom-button"
+              icon={<PlusOutlined />}
+              onClick={createAppointment}
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+              }}
+            >
+              GET APPOINTMENT
+            </Button>
+          )}
         </div>
       </Header>
     </div>

@@ -1,6 +1,6 @@
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
 import AppLayout from "@/components/layout/AppLayout";
-import { AuthProvider } from "@/context/AuthProvider";
+import { AuthProvider, useAuth } from "@/context/AuthProvider";
 import "@/styles/globals.css";
 import { ConfigProvider, theme } from "antd";
 import type { AppProps } from "next/app";
@@ -9,6 +9,7 @@ import { Toaster } from "react-hot-toast";
 
 export default function App({ Component, pageProps }: AppProps) {
   const router = useRouter();
+
   const isPublicRoute = [
     "/auth/login",
     "/auth/signup",

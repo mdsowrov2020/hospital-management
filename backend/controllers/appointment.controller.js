@@ -224,3 +224,58 @@ export const getAppointmentsByDoctorID = async (req, res) => {
     res.status(400).json({ message: error.message });
   }
 };
+
+export const updateStatusByID = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { status } = req.body;
+    const appointment = await Appointment.findByPk(id);
+    if (!appointment) {
+      return res.status(404).json({ message: "Appointment not found" });
+    }
+
+    appointment.status = status;
+    await appointment.save();
+    return res.status(200).json({
+      message: "Appointment status updated successfully",
+      appointment,
+    });
+  } catch (error) {
+    console.error("Error updating appointment status:", error);
+    return res.status(500).json({ message: "Server error" });
+  }
+};
+
+export const getAppointmentsByPatientId = async (req, res) => {
+  try {
+    const { patientId } = req.params;
+
+    const appointments = await Appointment.findAll({
+      where: { patientId },
+      include: [
+        {
+          model: Doctor,
+          include: [{ model: User, attributes: ["email", "role"] }],
+        },
+        {
+          model: Patient,
+          include: [{ model: User, attributes: ["email", "role"] }],
+        },
+      ],
+      order: [
+        ["appointmentDate", "ASC"],
+        ["appointmentTime", "ASC"],
+      ],
+    });
+
+    if (!appointments.length) {
+      return res.status(404).json({
+        message: "No appointments found for this patient ID",
+      });
+    }
+
+    res.status(200).json(appointments);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+};
