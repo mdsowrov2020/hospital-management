@@ -1,4 +1,5 @@
 import { useAuth } from "@/context/AuthProvider";
+import { Spin } from "antd";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 
@@ -22,7 +23,18 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   }, [isAuthenticated, loading, router]);
 
   if (loading || (!isAdmin && profileLoading)) {
-    return <div>Loading authentication and profile...</div>;
+    return (
+      <div
+        style={{
+          height: "100vh",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <Spin size="large" tip="Loading..." />
+      </div>
+    );
   }
 
   if (!isAdmin && profileError) {

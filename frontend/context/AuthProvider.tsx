@@ -104,20 +104,44 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
+  // const initializeAuth = async () => {
+  //   const storedToken = localStorage.getItem("token");
+  //   if (!storedToken) {
+  //     setLoading(false);
+  //     return;
+  //   }
+
+  //   try {
+  //     const userData = await getCurrentUser();
+  //     setUser(userData);
+  //     setToken(storedToken);
+  //     await fetchProfileWithUser(userData);
+  //   } catch (error) {
+  //     console.error("Initialization failed:", error);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
   const initializeAuth = async () => {
     const storedToken = localStorage.getItem("token");
+
     if (!storedToken) {
       setLoading(false);
       return;
     }
 
+    // ✅ Set token BEFORE calling getCurrentUser
+    setToken(storedToken); // This sets it in React state
+    // Axios will already pick up from localStorage via the interceptor
+
     try {
       const userData = await getCurrentUser();
       setUser(userData);
-      setToken(storedToken);
       await fetchProfileWithUser(userData);
     } catch (error) {
       console.error("Initialization failed:", error);
+      logout(); // Clear bad token if needed
     } finally {
       setLoading(false);
     }
