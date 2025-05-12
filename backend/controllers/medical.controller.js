@@ -2,7 +2,32 @@ import { MedicalRecord, Patient, User } from "../models/index.js";
 
 export const createMedicalRecord = async (req, res) => {
   try {
-    const medicalRecord = await MedicalRecord.create(req.body);
+    const {
+      patientId,
+      diagnosis,
+      treatment,
+      medications,
+      allergies,
+      notes,
+      date,
+    } = req.body;
+
+    if (!patientId || !diagnosis) {
+      return res
+        .status(400)
+        .json({ message: "patientId and diagnosis are required" });
+    }
+
+    const medicalRecord = await MedicalRecord.create({
+      patientId,
+      diagnosis,
+      treatment,
+      medications,
+      allergies,
+      notes,
+      date,
+    });
+
     res.status(201).json(medicalRecord);
   } catch (error) {
     res.status(400).json({ message: error.message });
