@@ -2,7 +2,32 @@ import { MedicalRecord, Patient, User } from "../models/index.js";
 
 export const createMedicalRecord = async (req, res) => {
   try {
-    const medicalRecord = await MedicalRecord.create(req.body);
+    const {
+      patientId,
+      diagnosis,
+      treatment,
+      medications,
+      allergies,
+      notes,
+      date,
+    } = req.body;
+
+    if (!patientId || !diagnosis) {
+      return res
+        .status(400)
+        .json({ message: "patientId and diagnosis are required" });
+    }
+
+    const medicalRecord = await MedicalRecord.create({
+      patientId,
+      diagnosis,
+      treatment,
+      medications,
+      allergies,
+      notes,
+      date,
+    });
+
     res.status(201).json(medicalRecord);
   } catch (error) {
     res.status(400).json({ message: error.message });
@@ -11,20 +36,26 @@ export const createMedicalRecord = async (req, res) => {
 
 export const getMedicalRecords = async (req, res) => {
   try {
+    if (!req.params.patientId) {
+      return res.status(400).json({ message: "Patient ID is required" });
+    }
     const medicalRecords = await MedicalRecord.findAll({
       where: { patientId: req.params.patientId },
+      attributes: ["id", "diagnosis", "treatment", "date"],
       include: [
         {
           model: Patient,
+          attributes: ["id", "fullName"],
           include: [
             {
               model: User,
-              attributes: ["firstName", "lastName"],
+              attributes: ["email"],
             },
           ],
         },
       ],
     });
+
     res.status(200).json(medicalRecords);
   } catch (error) {
     res.status(400).json({ message: error.message });

@@ -41,6 +41,7 @@ const endpoints = {
   medicalRecords: {
     base: "/medical-records",
     list: "/medical-records",
+    create: "/medical-records",
     detail: (id: string) => `/medical-records/${id}`,
   },
   profile: {

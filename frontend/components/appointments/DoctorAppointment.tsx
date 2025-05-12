@@ -9,6 +9,7 @@ import {
   Button,
   Space,
   Tag,
+  Form,
 } from "antd";
 
 import { CheckCircleOutlined, CloseCircleOutlined } from "@ant-design/icons";
@@ -18,6 +19,10 @@ import {
   changeStatusOfAppointment,
   getAppointmentByDoctorId,
 } from "@/lib/api/appointments/service";
+import { Modal } from "antd";
+import MedicalRecordForm from "@/components/medical-records/MedicalRecordForm";
+import { createMedicalRecord } from "@/lib/api/medical-records/service";
+
 import toast from "react-hot-toast";
 import CustomeTable from "@/components/ui/CustomeTable";
 
@@ -49,6 +54,15 @@ const DoctorAppointment = () => {
     dayjs().format("YYYY-MM-DD")
   );
   const [loading, setLoading] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedPatientId, setSelectedPatientId] = useState<number | null>(
+    null
+  );
+  const [form] = Form.useForm();
+  const [submitting, setSubmitting] = useState(false);
+  const [createdMedicalRecords, setCreatedMedicalRecords] = useState<number[]>(
+    []
+  );
 
   const fetchAppointments = async () => {
     if (!doctorId) return;
@@ -202,6 +216,33 @@ const DoctorAppointment = () => {
               )}
             </>
           )}
+
+          {record.status === "completed" ? (
+            createdMedicalRecords.includes(record.Patient?.id ?? record.id) ? (
+              <Button
+                type="default"
+                size="small"
+                style={{ borderRadius: 8 }}
+                onClick={() => {
+                  toast("View medical record clicked");
+                }}
+              >
+                View Medical Record
+              </Button>
+            ) : (
+              <Button
+                type="primary"
+                icon={<CloseCircleOutlined />}
+                size="small"
+                style={{ borderRadius: 8 }}
+                onClick={() =>
+                  openMedicalModal(record.Patient?.id ?? record.id)
+                }
+              >
+                Create Medical Record
+              </Button>
+            )
+          ) : null}
         </Space>
       ),
     },
@@ -209,30 +250,70 @@ const DoctorAppointment = () => {
 
   const selectedAppointments = appointmentsByDate[selectedDate] || [];
 
+  const openMedicalModal = (patientId: number) => {
+    setSelectedPatientId(patientId);
+    form.resetFields();
+    setIsModalOpen(true);
+  };
+
+  const handleCreateMedicalRecord = async (values: any) => {
+    if (!selectedPatientId) return;
+
+    setSubmitting(true);
+    const payload = { ...values, patientId: selectedPatientId };
+    const result = await createMedicalRecord(payload);
+
+    if (typeof result === "string") {
+      toast.error(result);
+    } else {
+      toast.success("Medical record created");
+      setIsModalOpen(false);
+      setCreatedMedicalRecords((prev) => [...prev, selectedPatientId]);
+    }
+
+    setSubmitting(false);
+  };
+
   return (
-    <div style={{ padding: 24, background: "#fff", minHeight: "100vh" }}>
-      <Title level={2}>Appointment Calendar</Title>
+    <>
+      <div style={{ padding: 24, background: "#fff", minHeight: "100vh" }}>
+        <Title level={2}>Appointment Calendar</Title>
 
-      <Card bordered style={{ borderRadius: 12, marginBottom: 24 }}>
-        <Calendar fullscreen cellRender={cellRender} onSelect={onSelect} />
-      </Card>
+        <Card bordered style={{ borderRadius: 12, marginBottom: 24 }}>
+          <Calendar fullscreen cellRender={cellRender} onSelect={onSelect} />
+        </Card>
 
-      <Card
-        title={`Patients on ${dayjs(selectedDate).format("MMMM D, YYYY")}`}
-        bordered
-        style={{ borderRadius: 12 }}
+        <Card
+          title={`Patients on ${dayjs(selectedDate).format("MMMM D, YYYY")}`}
+          bordered
+          style={{ borderRadius: 12 }}
+        >
+          {loading ? (
+            <div style={{ textAlign: "center", padding: 40 }}>
+              <Spin size="large" />
+            </div>
+          ) : selectedAppointments.length > 0 ? (
+            <CustomeTable dataSource={selectedAppointments} columns={columns} />
+          ) : (
+            <Empty description="No Patients Scheduled" />
+          )}
+        </Card>
+      </div>
+      <Modal
+        title="Create Medical Record"
+        open={isModalOpen}
+        onCancel={() => setIsModalOpen(false)}
+        footer={null}
+        width={700}
+        destroyOnClose
       >
-        {loading ? (
-          <div style={{ textAlign: "center", padding: 40 }}>
-            <Spin size="large" />
-          </div>
-        ) : selectedAppointments.length > 0 ? (
-          <CustomeTable dataSource={selectedAppointments} columns={columns} />
-        ) : (
-          <Empty description="No Patients Scheduled" />
-        )}
-      </Card>
-    </div>
+        <MedicalRecordForm
+          form={form}
+          onFinish={handleCreateMedicalRecord}
+          submitting={submitting}
+        />
+      </Modal>
+    </>
   );
 };
 
