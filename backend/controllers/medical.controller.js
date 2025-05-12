@@ -36,20 +36,26 @@ export const createMedicalRecord = async (req, res) => {
 
 export const getMedicalRecords = async (req, res) => {
   try {
+    if (!req.params.patientId) {
+      return res.status(400).json({ message: "Patient ID is required" });
+    }
     const medicalRecords = await MedicalRecord.findAll({
       where: { patientId: req.params.patientId },
+      attributes: ["id", "diagnosis", "treatment", "date"],
       include: [
         {
           model: Patient,
+          attributes: ["id", "fullName"],
           include: [
             {
               model: User,
-              attributes: ["firstName", "lastName"],
+              attributes: ["email"],
             },
           ],
         },
       ],
     });
+
     res.status(200).json(medicalRecords);
   } catch (error) {
     res.status(400).json({ message: error.message });

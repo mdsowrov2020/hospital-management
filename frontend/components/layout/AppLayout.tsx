@@ -24,6 +24,8 @@ const AppLayout = ({ children }) => {
               minHeight: 360,
               background: colorBgContainer,
               borderRadius: borderRadiusLG,
+              height: "80vh",
+              overflowY: "auto",
             }}
           >
             {children}
