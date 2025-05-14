@@ -1,0 +1,112 @@
+.navbarContainer {
+  width: 100%;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.navbarWrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 5%;
+  max-width: 1400px;
+  margin: 0 auto;
+  height: 80px;
+}
+
+.logoContainer {
+  flex: 1;
+}
+
+.logoContainer img {
+  cursor: pointer;
+}
+
+.navLinks {
+  flex: 2;
+  display: flex;
+  justify-content: center;
+}
+
+.menuList {
+  display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  gap: 40px;
+}
+
+.menuItem a {
+  color: #333;
+  font-weight: 500;
+  text-decoration: none;
+  font-size: 16px;
+  transition: color 0.3s;
+}
+
+.menuItem a:hover {
+  color: #1890ff;
+}
+
+.activeLink {
+  color: #1890ff !important;
+  border-bottom: 2px solid #1890ff;
+  padding-bottom: 4px;
+}
+
+.actionButtons {
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 16px;
+}
+
+.appointmentButton {
+  background: #ef7e7e;
+  border-color: #ef7e7e;
+  font-weight: 500;
+}
+
+.appointmentButton:hover {
+  background: #e06b6b !important;
+  border-color: #e06b6b !important;
+}
+
+.authButtons {
+  display: flex;
+  gap: 12px;
+}
+
+.loginButton {
+  color: #333;
+}
+
+.registerButton {
+  border-color: #1890ff;
+  color: #1890ff;
+}
+
+/* Responsive styles */
+@media (max-width: 992px) {
+  .navbarWrapper {
+    padding: 0 24px;
+  }
+
+  .menuList {
+    gap: 24px;
+  }
+}
+
+@media (max-width: 768px) {
+  .navLinks {
+    display: none;
+  }
+
+  .actionButtons {
+    gap: 12px;
+  }
+}

@@ -49,7 +49,7 @@ export default function LoginPage() {
 
       if (response.user.role === "doctor") {
         if (profile.fullName !== null || profile.licenseNumber !== null) {
-          router.push("/profile/doctor");
+          router.push("/profile");
         } else {
           router.push("/profile/doctor/create");
         }
@@ -57,7 +57,7 @@ export default function LoginPage() {
 
       if (response.user.role === "patient") {
         if (profile.fullName !== null) {
-          router.push("/profile/patient");
+          router.push("/profile");
         } else {
           router.push("/profile/patient/create");
         }

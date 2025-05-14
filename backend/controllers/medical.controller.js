@@ -41,7 +41,15 @@ export const getMedicalRecords = async (req, res) => {
     }
     const medicalRecords = await MedicalRecord.findAll({
       where: { patientId: req.params.patientId },
-      attributes: ["id", "diagnosis", "treatment", "date"],
+      attributes: [
+        "id",
+        "diagnosis",
+        "treatment",
+        "medications",
+        "allergies",
+        "notes",
+        "date",
+      ],
       include: [
         {
           model: Patient,
