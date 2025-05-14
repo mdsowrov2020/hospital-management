@@ -97,23 +97,6 @@ const PatientProfile: React.FC<PatientProfileProps> = ({ profile }) => {
         </Col>
       </Row>
       <Divider />
-      <Row gutter={[16, 16]} justify="start">
-        <Col>
-          <Button type="primary" size="large" className="custom-button medium">
-            Medical records
-          </Button>
-        </Col>
-        <Col>
-          <Button
-            type="primary"
-            size="large"
-            className="custom-button medium"
-            onClick={() => router.push("/appointments/create")}
-          >
-            Appointments
-          </Button>
-        </Col>
-      </Row>
     </Card>
   );
 };

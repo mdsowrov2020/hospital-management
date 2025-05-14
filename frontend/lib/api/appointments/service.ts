@@ -44,6 +44,29 @@ export const getAppointmentByDoctorId = async (
   }
 };
 
+export const getAppointmentByPatientId = async (
+  id: string,
+  date?: string
+): Promise<Appointment[] | string> => {
+  try {
+    const query = date ? `?date=${encodeURIComponent(date)}` : "";
+    const response = await api.get(
+      `${endpoints.appointments.getByPatient(id)}${query}`
+    );
+    return response.data;
+  } catch (error: any) {
+    if (error.response?.data?.message) {
+      return error.response.data.message;
+    } else if (error.response) {
+      return error.response.statusText || "An error occurred";
+    } else if (error.request) {
+      return "No response from server";
+    } else {
+      return error.message || "An unknown error occurred";
+    }
+  }
+};
+
 export const changeStatusOfAppointment = async (
   appointmentId: string,
   status: string

@@ -10,23 +10,30 @@ import {
   Space,
   Tag,
   Form,
+  Modal,
+  Collapse,
 } from "antd";
-
-import { CheckCircleOutlined, CloseCircleOutlined } from "@ant-design/icons";
+import {
+  CheckCircleOutlined,
+  CloseCircleOutlined,
+  EyeOutlined,
+} from "@ant-design/icons";
 import dayjs, { Dayjs } from "dayjs";
 import { useAuth } from "@/context/AuthProvider";
 import {
   changeStatusOfAppointment,
   getAppointmentByDoctorId,
 } from "@/lib/api/appointments/service";
-import { Modal } from "antd";
-import MedicalRecordForm from "@/components/medical-records/MedicalRecordForm";
-import { createMedicalRecord } from "@/lib/api/medical-records/service";
-
+import {
+  createMedicalRecord,
+  getMedicalRecordsByPatient,
+} from "@/lib/api/medical-records/service";
 import toast from "react-hot-toast";
 import CustomeTable from "@/components/ui/CustomeTable";
+import MedicalRecordForm from "@/components/medical-records/MedicalRecordForm";
 
 const { Title } = Typography;
+const { Panel } = Collapse;
 
 type Appointment = {
   id: number;
@@ -34,8 +41,25 @@ type Appointment = {
   reason?: string;
   status?: "scheduled" | "confirmed" | "completed" | "cancelled" | "no-show";
   Patient?: {
+    id: number;
     fullName?: string;
     phoneNumber?: string;
+    User?: {
+      email?: string;
+    };
+  };
+};
+
+type MedicalRecord = {
+  id: number;
+  diagnosis: string;
+  treatment: string;
+  medications: string;
+  notes: string;
+  date: string;
+  Patient?: {
+    id: number;
+    fullName?: string;
     User?: {
       email?: string;
     };
@@ -58,19 +82,24 @@ const DoctorAppointment = () => {
   const [selectedPatientId, setSelectedPatientId] = useState<number | null>(
     null
   );
+  const [viewModalOpen, setViewModalOpen] = useState(false);
+  const [selectedMedicalRecord, setSelectedMedicalRecord] =
+    useState<MedicalRecord | null>(null);
   const [form] = Form.useForm();
   const [submitting, setSubmitting] = useState(false);
-  const [createdMedicalRecords, setCreatedMedicalRecords] = useState<number[]>(
-    []
-  );
+  const [medicalRecordsMap, setMedicalRecordsMap] = useState<
+    Record<number, MedicalRecord[]>
+  >({});
 
   const fetchAppointments = async () => {
     if (!doctorId) return;
     setLoading(true);
     try {
       const res = await getAppointmentByDoctorId(doctorId);
+
       if (Array.isArray(res)) {
         setAppointments(res);
+
         const grouped: Record<string, Appointment[]> = {};
         res.forEach((appt) => {
           const date = dayjs(appt.appointmentDate).format("YYYY-MM-DD");
@@ -78,6 +107,26 @@ const DoctorAppointment = () => {
           grouped[date].push(appt);
         });
         setAppointmentsByDate(grouped);
+
+        const completedPatientIds = Array.from(
+          new Set(
+            res
+              .filter((a) => a.status === "completed")
+              .map((a) => a.Patient?.id)
+              .filter(Boolean)
+          )
+        ) as number[];
+
+        const records: Record<number, MedicalRecord[]> = {};
+        for (const id of completedPatientIds) {
+          const result = await getMedicalRecordsByPatient(String(id));
+          if (Array.isArray(result)) {
+            records[id] = result.sort(
+              (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+            );
+          }
+        }
+        setMedicalRecordsMap(records);
       } else {
         toast.error(
           typeof res === "string" ? res : "Error fetching appointments"
@@ -109,15 +158,77 @@ const DoctorAppointment = () => {
     setSelectedDate(date.format("YYYY-MM-DD"));
   };
 
-  const handleStatusChange = async (id: number, status: string) => {
+  const handleStatusChange = async (
+    id: number,
+    status: string,
+    patientId?: number
+  ) => {
     const result = await changeStatusOfAppointment(String(id), status);
-
     if (typeof result === "string") {
       toast.error(result);
     } else {
       toast.success(`Appointment ${status.toUpperCase()}`);
-      fetchAppointments(); // Refresh data
+      await fetchAppointments();
+
+      if (status === "completed" && patientId) {
+        setSelectedPatientId(patientId);
+        form.resetFields();
+        setIsModalOpen(true);
+      }
     }
+  };
+
+  const handleCreateMedicalRecord = async (values: any) => {
+    if (!selectedPatientId) return;
+    setSubmitting(true);
+    const payload = { ...values, patientId: selectedPatientId };
+    const result = await createMedicalRecord(payload);
+
+    if (typeof result === "string") {
+      toast.error(result);
+    } else {
+      toast.success("Medical record created");
+      setIsModalOpen(false);
+
+      const newRecords = await getMedicalRecordsByPatient(
+        String(selectedPatientId)
+      );
+      if (Array.isArray(newRecords)) {
+        setMedicalRecordsMap((prev) => ({
+          ...prev,
+          [selectedPatientId]: newRecords.sort(
+            (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+          ),
+        }));
+        setSelectedMedicalRecord(newRecords[0]);
+        setViewModalOpen(true);
+      }
+    }
+    setSubmitting(false);
+  };
+
+  const handleViewMedicalRecord = async (patientId: number) => {
+    let records = medicalRecordsMap[patientId];
+
+    if (!records || records.length === 0) {
+      const result = await getMedicalRecordsByPatient(String(patientId));
+      if (Array.isArray(result) && result.length > 0) {
+        records = result.sort(
+          (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+        );
+        setMedicalRecordsMap((prev) => ({
+          ...prev,
+          [patientId]: records!,
+        }));
+      } else {
+        toast.error("No medical records found for this patient.");
+        return;
+      }
+    }
+
+    setSelectedMedicalRecord(records[0]);
+    setSelectedPatientId(patientId);
+    setViewModalOpen(true);
   };
 
   const getStatusTag = (status: string) => {
@@ -141,170 +252,112 @@ const DoctorAppointment = () => {
     {
       title: "Patient Name",
       dataIndex: ["Patient", "fullName"],
-      key: "name",
-      render: (text: string) => text || "Unnamed Patient",
     },
     {
       title: "Email",
       dataIndex: ["Patient", "User", "email"],
-      key: "email",
-      render: (text: string) => text || "N/A",
     },
     {
       title: "Phone",
       dataIndex: ["Patient", "phoneNumber"],
-      key: "phone",
-      render: (text: string) => text || "N/A",
     },
     {
       title: "Reason",
       dataIndex: "reason",
-      key: "reason",
-      render: (text: string) => text || "Not specified",
+      render: (text: string) => text || "N/A",
     },
     {
       title: "Status",
       dataIndex: "status",
-      key: "status",
       render: (status: string) => getStatusTag(status),
     },
-
     {
       title: "Action",
       key: "action",
-      render: (_: any, record: Appointment) => (
-        <Space>
-          {record.status === "completed" || record.status === "cancelled" ? (
-            ""
-          ) : (
-            <Button
-              type="primary"
-              icon={<CheckCircleOutlined />}
-              size="small"
-              style={{ backgroundColor: "#52c41a", borderRadius: 8 }}
-              onClick={() => handleStatusChange(record.id, "completed")}
-            >
-              Mark Complete
-            </Button>
-          )}
+      render: (_: any, record: Appointment) => {
+        const patientId = record.Patient?.id;
+        const isCompleted = record.status === "completed";
+        const hasMedicalRecord =
+          patientId && medicalRecordsMap[patientId]?.length > 0;
 
-          {record.status === "cancelled" ? (
-            <Button
-              type="primary"
-              icon={<CloseCircleOutlined />}
-              size="small"
-              style={{ borderRadius: 8 }}
-              onClick={() => handleStatusChange(record.id, "scheduled")}
-            >
-              Confirm Schedule
-            </Button>
-          ) : (
-            <>
-              {record.status === "completed" ? (
-                ""
-              ) : (
+        return (
+          <Space>
+            {!isCompleted && record.status !== "cancelled" && (
+              <Button
+                type="primary"
+                icon={<CheckCircleOutlined />}
+                size="small"
+                onClick={() =>
+                  handleStatusChange(record.id, "completed", patientId)
+                }
+              >
+                Mark Complete
+              </Button>
+            )}
+
+            {record.status === "cancelled" ? (
+              <Button
+                type="primary"
+                size="small"
+                onClick={() => handleStatusChange(record.id, "scheduled")}
+              >
+                Reschedule
+              </Button>
+            ) : (
+              !isCompleted && (
                 <Button
-                  type="primary"
                   danger
-                  icon={<CloseCircleOutlined />}
+                  type="primary"
                   size="small"
-                  style={{ borderRadius: 8 }}
+                  icon={<CloseCircleOutlined />}
                   onClick={() => handleStatusChange(record.id, "cancelled")}
                 >
                   Cancel
                 </Button>
-              )}
-            </>
-          )}
+              )
+            )}
 
-          {record.status === "completed" ? (
-            createdMedicalRecords.includes(record.Patient?.id ?? record.id) ? (
+            {isCompleted && patientId && (
               <Button
                 type="default"
+                icon={<EyeOutlined />}
                 size="small"
-                style={{ borderRadius: 8 }}
-                onClick={() => {
-                  toast("View medical record clicked");
-                }}
+                onClick={() => handleViewMedicalRecord(patientId)}
               >
                 View Medical Record
               </Button>
-            ) : (
-              <Button
-                type="primary"
-                icon={<CloseCircleOutlined />}
-                size="small"
-                style={{ borderRadius: 8 }}
-                onClick={() =>
-                  openMedicalModal(record.Patient?.id ?? record.id)
-                }
-              >
-                Create Medical Record
-              </Button>
-            )
-          ) : null}
-        </Space>
-      ),
+            )}
+          </Space>
+        );
+      },
     },
   ];
 
   const selectedAppointments = appointmentsByDate[selectedDate] || [];
 
-  const openMedicalModal = (patientId: number) => {
-    setSelectedPatientId(patientId);
-    form.resetFields();
-    setIsModalOpen(true);
-  };
-
-  const handleCreateMedicalRecord = async (values: any) => {
-    if (!selectedPatientId) return;
-
-    setSubmitting(true);
-    const payload = { ...values, patientId: selectedPatientId };
-    const result = await createMedicalRecord(payload);
-
-    if (typeof result === "string") {
-      toast.error(result);
-    } else {
-      toast.success("Medical record created");
-      setIsModalOpen(false);
-      setCreatedMedicalRecords((prev) => [...prev, selectedPatientId]);
-    }
-
-    setSubmitting(false);
-  };
-
   return (
     <>
-      <div style={{ padding: 24, background: "#fff", minHeight: "100vh" }}>
+      <div style={{ padding: 24 }}>
         <Title level={2}>Appointment Calendar</Title>
-
-        <Card bordered style={{ borderRadius: 12, marginBottom: 24 }}>
+        <Card style={{ marginBottom: 24 }}>
           <Calendar fullscreen cellRender={cellRender} onSelect={onSelect} />
         </Card>
-
-        <Card
-          title={`Patients on ${dayjs(selectedDate).format("MMMM D, YYYY")}`}
-          bordered
-          style={{ borderRadius: 12 }}
-        >
+        <Card title={`Appointments on ${selectedDate}`}>
           {loading ? (
-            <div style={{ textAlign: "center", padding: 40 }}>
-              <Spin size="large" />
-            </div>
+            <Spin />
           ) : selectedAppointments.length > 0 ? (
             <CustomeTable dataSource={selectedAppointments} columns={columns} />
           ) : (
-            <Empty description="No Patients Scheduled" />
+            <Empty />
           )}
         </Card>
       </div>
+
       <Modal
         title="Create Medical Record"
         open={isModalOpen}
         onCancel={() => setIsModalOpen(false)}
         footer={null}
-        width={700}
         destroyOnClose
       >
         <MedicalRecordForm
@@ -312,6 +365,88 @@ const DoctorAppointment = () => {
           onFinish={handleCreateMedicalRecord}
           submitting={submitting}
         />
+      </Modal>
+
+      <Modal
+        title={`Medical Records for ${
+          selectedMedicalRecord?.Patient?.fullName || "Patient"
+        }`}
+        open={viewModalOpen}
+        onCancel={() => setViewModalOpen(false)}
+        footer={null}
+        width={800}
+      >
+        {selectedMedicalRecord && selectedPatientId ? (
+          <div>
+            <div style={{ marginBottom: 24 }}>
+              <Title level={4} style={{ marginBottom: 16 }}>
+                Current Record (
+                {dayjs(selectedMedicalRecord.date).format("MMMM D, YYYY")})
+              </Title>
+              <Card>
+                <p>
+                  <strong>Diagnosis:</strong> {selectedMedicalRecord.diagnosis}
+                </p>
+                <p>
+                  <strong>Treatment:</strong> {selectedMedicalRecord.treatment}
+                </p>
+                <p>
+                  <strong>Medications:</strong>{" "}
+                  {selectedMedicalRecord.medications}
+                </p>
+                <p>
+                  <strong>Notes:</strong> {selectedMedicalRecord.notes}
+                </p>
+              </Card>
+            </div>
+
+            {medicalRecordsMap[selectedPatientId]?.length > 1 && (
+              <div>
+                <Title level={4}>Previous Records</Title>
+                <Collapse accordion>
+                  {medicalRecordsMap[selectedPatientId]
+                    .filter((record) => record.id !== selectedMedicalRecord.id)
+                    .map((record) => (
+                      <Panel
+                        header={`Record from ${dayjs(record.date).format(
+                          "MMMM D, YYYY"
+                        )}`}
+                        key={record.id}
+                        extra={
+                          <Button
+                            type="link"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setSelectedMedicalRecord(record);
+                            }}
+                          >
+                            View Details
+                          </Button>
+                        }
+                      >
+                        <div style={{ padding: 16 }}>
+                          <p>
+                            <strong>Diagnosis:</strong> {record.diagnosis}
+                          </p>
+                          <p>
+                            <strong>Treatment:</strong> {record.treatment}
+                          </p>
+                          <p>
+                            <strong>Medications:</strong> {record.medications}
+                          </p>
+                          <p>
+                            <strong>Notes:</strong> {record.notes}
+                          </p>
+                        </div>
+                      </Panel>
+                    ))}
+                </Collapse>
+              </div>
+            )}
+          </div>
+        ) : (
+          <Empty description="No medical records found" />
+        )}
       </Modal>
     </>
   );

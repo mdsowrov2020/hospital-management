@@ -40,7 +40,7 @@ const menuItems = [
     icon: <FileOutlined className={styles.menuIcon} />,
     label: <Link href="/medical-records">Medical Records</Link>,
     iconType: "green",
-    roles: ["admin", "doctor", "patient"],
+    roles: ["admin", "patient"],
   },
   {
     key: "5",
