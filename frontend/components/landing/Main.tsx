@@ -13,9 +13,9 @@ const Main = () => {
       {/* Hero Banner */}
       <Hero />
       {/* Why choose us */}
-      <ChooseUs />
+      {/* <ChooseUs /> */}
       {/* Services */}
-      <Services />
+      {/* <Services /> */}
       {/* Doctors */}
       <Doctors />
     </>

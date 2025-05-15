@@ -9,7 +9,7 @@ import {
 } from "../controllers/doctor.controller.js";
 
 const router = Router();
-router.get("/", getDoctors);
+// router.get("/", getDoctors);
 router.get("/:id", getDoctor);
 router.get("/:id/available-days", getAvailableDaysById);
 router.post("/", createDoctor);
