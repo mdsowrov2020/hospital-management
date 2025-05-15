@@ -7,11 +7,13 @@ import patientRoutes from "./patient.routes.js";
 import authRoutes from "./auth.routes.js";
 import profileRoutes from "./profile.routes.js";
 import { authenticate } from "../middleware/auth.js";
+import { getDoctors } from "../controllers/doctor.controller.js";
 
 const router = Router();
 
 // Public routes (no authentication required)
 router.use("/auth", authRoutes);
+router.get("/doctors", getDoctors);
 
 // Protected routes (require authentication)
 router.use(authenticate);
