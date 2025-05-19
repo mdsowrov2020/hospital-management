@@ -1,10 +1,11 @@
+import List from "@/components/medical-records/List";
 import { Button } from "antd";
 import React from "react";
 
 const MedicalRecords = () => {
   return (
     <div>
-      <Button type="primary">Change Theme</Button>
+      <List />
     </div>
   );
 };

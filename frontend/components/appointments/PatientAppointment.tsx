@@ -1,17 +1,18 @@
-// components/appointments/PatientAppointment.tsx
 import React, { useEffect, useState } from "react";
 
-import { Spin, Tag, message } from "antd";
+import { Button, Spin, Tag, message } from "antd";
 import dayjs from "dayjs";
 import { useAuth } from "@/context/AuthProvider";
 import { Appointment } from "@/lib/api/appointments/types";
 import { getAppointmentByPatientId } from "@/lib/api/appointments/service";
 import CustomeTable from "../ui/CustomeTable";
+import { useRouter } from "next/router";
 
 const PatientAppointment = () => {
   const { patientProfile } = useAuth();
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
+  const router = useRouter();
 
   const fetchAppointments = async () => {
     if (!patientProfile?.id) return;
@@ -80,10 +81,18 @@ const PatientAppointment = () => {
       <Spin size="large" />
     </div>
   ) : (
-    <CustomeTable
-      dataSource={appointments.map((item) => ({ ...item, key: item.id }))}
-      columns={columns}
-    />
+    <div>
+      <Button
+        onClick={() => router.push("/appointments/create")}
+        style={{ marginBottom: "20px" }}
+      >
+        Create appoinment
+      </Button>
+      <CustomeTable
+        dataSource={appointments.map((item) => ({ ...item, key: item.id }))}
+        columns={columns}
+      />
+    </div>
   );
 };
 
