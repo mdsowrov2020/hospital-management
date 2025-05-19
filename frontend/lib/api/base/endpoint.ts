@@ -43,7 +43,7 @@ const endpoints = {
     list: "/medical-records",
     create: "/medical-records",
     detail: (id: string) => `/medical-records/${id}`,
-    getByPatient: (id: string) => `/medical-records/${id}/medical-records`,
+    getByPatient: (id: string) => `/medical-records/${id}`,
   },
   profile: {
     get: "/profile",
